@@ -85,6 +85,15 @@ class Route(db.Model):
     def __repr__(self):
         return f'{self.name}'
 
+class Appointment(db.Model):
+    """Appointment model"""
+    id = db.Column(db.Integer, primary_key=True)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'), nullable=False)
+    appointment_time = db.Column(db.DateTime, nullable=False)
+
+
+
 # venue_category_table = db.Table('venue_category',
 #     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
 #     db.Column('category', db.Enum(Category))

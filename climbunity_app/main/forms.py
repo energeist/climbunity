@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Length, URL, ValidationError, Numbe
 from climbunity_app.utils import FormEnum
 from climbunity_app.models import *
 from climbunity_app.extensions import app, db, bcrypt
-from wtforms.fields.html5 import DateField
+from wtforms.fields.html5 import DateField, DateTimeField
 # from flask_login import current_user
 
 class VenueForm(FlaskForm):
@@ -40,5 +40,4 @@ class RouteForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class AppointmentForm(FlaskForm):
-    quantity = IntegerField('Quantity',
-        validators=[DataRequired(), NumberRange(min=0)])
+    route_set_date = DateTimeField('Appointment Date and Time')

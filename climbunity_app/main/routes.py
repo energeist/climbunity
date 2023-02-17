@@ -104,27 +104,3 @@ def route_detail(route_id):
         return redirect(url_for('main.route_detail', route_id=route.id))
     item = Route.query.get(route_id)
     return render_template('route_detail.html', form=form, route=route)
-
-@main.route('/add_to_shopping_list/<item_id>', methods=['POST'])
-@login_required
-def add_to_shopping_list(item_id):
-    item = GroceryItem.query.get(item_id)
-    current_user.shopping_list_items.append(item)
-    db.session.commit()
-    flash(f"{item.name} added to cart")
-    return redirect(url_for("main.shopping_list", item_id=item.id))
-
-@main.route('/remove_from_shopping_list/<item_id>', methods=['POST'])
-@login_required
-def remove_from_shopping_list(item_id):
-    item = GroceryItem.query.get(item_id)
-    current_user.shopping_list_items.remove(item)
-    db.session.commit()
-    flash(f"{item.name} removed from cart")
-    return redirect(url_for("main.shopping_list", item_id=item.id))
-
-@main.route('/shopping_list')
-@login_required
-def shopping_list():
-    shopping_list = current_user.shopping_list_items
-    return render_template("shopping_list.html", shopping_list=shopping_list)
