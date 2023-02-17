@@ -41,9 +41,6 @@ class User(UserMixin, db.Model):
     address = db.Column(db.String(200), nullable=False)
     has_gear = db.Column(db.Boolean, nullable=False)
     # climber_styles = db.relationship('Category', secondary='user_category')
-    # shopping_list_items = db.relationship('GroceryItem',
-    #     secondary='user_shopping_list', back_populates='user_item_lists'
-    # )
 
     def __repr__(self):
         return f'<User: {self.username}>'
@@ -90,7 +87,7 @@ class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'), nullable=False)
-    appointment_time = db.Column(db.DateTime, nullable=False)
+    appointment_datetime = db.Column(db.DateTime, nullable=False)
 
 
 

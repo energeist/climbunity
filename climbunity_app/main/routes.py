@@ -104,3 +104,19 @@ def route_detail(route_id):
         return redirect(url_for('main.route_detail', route_id=route.id))
     item = Route.query.get(route_id)
     return render_template('route_detail.html', form=form, route=route)
+
+@main.route('/new_appointment', methods=['GET', 'POST'])
+@login_required
+def new_appointment():
+    form = AppointmentForm()
+    if form.is_submitted():
+        new_appointment = Appointment(
+            created_by=current_user,
+            venue_id=1,
+            appointment_datetime=form.appointment_datetime.data,
+        )
+        db.session.add(new_appointment)
+        db.session.commit()
+        flash('New appointment was created successfully.')
+        return redirect(url_for('main.appointment_detail', appointment_id=new_appointment.id))
+    return render_template('new_appointment.html', form=form)

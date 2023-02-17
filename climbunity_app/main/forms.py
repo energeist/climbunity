@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, SubmitField, FloatField, PasswordField, IntegerField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
@@ -5,7 +6,7 @@ from wtforms.validators import DataRequired, Length, URL, ValidationError, Numbe
 from climbunity_app.utils import FormEnum
 from climbunity_app.models import *
 from climbunity_app.extensions import app, db, bcrypt
-from wtforms.fields.html5 import DateField, DateTimeField
+from wtforms.fields.html5 import DateField, DateTimeLocalField
 # from flask_login import current_user
 
 class VenueForm(FlaskForm):
@@ -40,4 +41,13 @@ class RouteForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class AppointmentForm(FlaskForm):
-    route_set_date = DateTimeField('Appointment Date and Time')
+    
+    appointment_datetime = DateTimeLocalField(
+        'Appointment Date and Time',
+        validators=[DataRequired()]
+    )
+    def validate_datetime(form, field):
+        if field.data < datetime.now():
+            raise ValidationError("The appointment cannot be in the past!")
+    # appointment_time = TimeField('Appointment Time')
+    submit = SubmitField('Submit')
