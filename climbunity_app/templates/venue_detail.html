@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Venue - {{ venue.name }}</h1>
+
+<p><strong>Address / Location:</strong> {{ venue.address }}</p>
+
+<p><strong>Hours of Operation:</strong> {{ venue.open_hours }}</p>
+
+<p><strong>Description:</strong> {{ venue.description }}</p>
+
+<h2>Routes (not done yet)</h2>
+
+<div class="items">
+    {% for item in venue.routes %}
+    <div class="route-details">
+        <a href="/route/{{ route.id }}"><img src="{{ route.photo_url }}" alt="{{ route.name }}" width="200px">
+        <p><strong>{{ route.name }}</strong></p></a>
+        <p><strong>Grade: ${{ route.grade }}</strong></p>
+    </div>
+    {% endfor %}
+</div>
+
+<h2>Edit Venue</h2>
+
+<form method="POST" action="{{ url_for('main.venue_detail', venue_id=venue.id) }}">
+    {{ form.csrf_token }}
+    <fieldset>
+        <legend>Edit this climbing venue:</legend>
+        {{ form.name.label }}
+        {{ form.name }}
+        
+        {{ form.address.label }}
+        {{ form.address }}
+
+        {{ form.open_hours.label }}
+        {{ form.open_hours }}
+        
+        {{ form.description.label }}
+        {{ form.description }}
+
+        {{ form.submit }}
+    </fieldset>
+</form>
+
+{% endblock %}

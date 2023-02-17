@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Climbunity - Find a climbing partner and spray some beta!</h1>
+
+<p><em>Get out and add to your tick list!</em></p>
+
+<h2>All Venues</h2>
+
+{% for venue in all_venues %}
+<div class="store">
+    {{ venue.name }} - 
+    <p><strong>Address:</strong> {{ venue.address }}</p>
+</div>
+{% endfor %}
+
+{% endblock %}

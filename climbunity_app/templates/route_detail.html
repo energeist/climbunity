@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Route - {{ route.name }}</h1>
+
+{% if route.photo_url %}
+<p><img src="{{ route.photo_url }}" width="250px" height="250px"></p>    
+{% endif %}
+
+<p><strong>Venue:</strong> ${{ route.venue_id }}</p>
+
+<p><strong>Grade:</strong> ${{ route.grade }}</p>
+
+<p><strong>Set Date:</strong> {{ route.route_set_date }}</p>
+
+<p><strong>Takedown Date:</strong> {{ route.route_takedown_date }}</p>
+
+<p><strong>Route set by user ID:</strong> {{ route.setter_id }}</p>
+
+<form method="POST" action="/add_to_shopping_list/{{ route.id }}">
+    <input type="submit" value="Add to cart!">
+</form>
+
+<h2>Edit Item</h2>
+
+<form method="POST" action="{{ url_for('main.route_detail', route_id=route.id) }}">
+    {{ form.csrf_token }}
+    <fieldset>
+        <legend>Edit this route:</legend>
+        <!-- TODO: Remove the next paragraph and use the `form` object passed in 
+            from the route to render a form. -->
+        {{ form.name.label }}
+        {{ form.name }}
+
+        {{ form.venue_id.label }}
+        {{ form.venue_id }}
+        
+        {{ form.grade.label }}
+        {{ form.grade }}
+
+        {{ form.photo_url.label }}
+        {{ form.photo_url }}
+
+        {{ form.route_set_date.label }}
+        {{ form.route_set_date }}
+
+        {{ form.route_takedown_date.label }}
+        {{ form.route_takedown_date }}
+        set   </fieldset>
+</form>
+
+{% endblock %}
