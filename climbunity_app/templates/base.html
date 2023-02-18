@@ -9,7 +9,7 @@
     <body>
         <div id="content">
             {% if current_user.is_authenticated %}
-                <p>You are logged in as {{ current_user.username }}</p>
+                <p>You are logged in as {{ current_user.username }}. <a href="/profile/{{ current_user.id }}">Visit your profile</a></p>
             {% endif %}
             {% for message in get_flashed_messages() %}
                 <p>{{ message }}</p>

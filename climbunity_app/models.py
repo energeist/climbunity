@@ -87,7 +87,7 @@ class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'), nullable=False)
-    appointment_datetime = db.Column(db.DateTime, nullable=False)
+    appointment_date = db.Column(db.DateTime, nullable=False)
 
 
 

@@ -6,7 +6,7 @@ from wtforms.validators import DataRequired, Length, URL, ValidationError, Numbe
 from climbunity_app.utils import FormEnum
 from climbunity_app.models import *
 from climbunity_app.extensions import app, db, bcrypt
-from wtforms.fields.html5 import DateField, DateTimeLocalField
+from wtforms.fields.html5 import DateField, TimeField, DateTimeField, DateTimeLocalField
 # from flask_login import current_user
 
 class VenueForm(FlaskForm):
@@ -42,12 +42,16 @@ class RouteForm(FlaskForm):
 
 class AppointmentForm(FlaskForm):
     
-    appointment_datetime = DateTimeLocalField(
+    appointment_date = DateField(
         'Appointment Date and Time',
-        validators=[DataRequired()]
     )
-    def validate_datetime(form, field):
-        if field.data < datetime.now():
-            raise ValidationError("The appointment cannot be in the past!")
+    def validate_datetime(self, appointment_date):
+        print("thing")
+        # print(datetime.now())
+        # if appointment_datetime.data < datetime.now():
+        #     raise ValidationError("The appointment cannot be in the past!")
+        appointment_date = DateField(
+        'Appointment Date',
+        validators=[DataRequired()])
     # appointment_time = TimeField('Appointment Time')
     submit = SubmitField('Submit')
