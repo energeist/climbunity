@@ -70,10 +70,10 @@ class Venue(db.Model):
     # venue_type = db.relationship('Category', secondary='venue_category')
 
     def __str__(self):
-        return f'{self.title}'
+        return f'{self.name}'
 
     def __repr__(self):
-        return f'{self.title}'
+        return f'{self.name}'
 
 class Route(db.Model):
     """Route model"""
@@ -90,7 +90,6 @@ class Route(db.Model):
     )
     ascents_on_route = db.relationship('Ascent',
         secondary='route_ascent_lists', back_populates='routes_ascended')
-
 
     def __str__(self):
         return f'{self.name}'
@@ -126,7 +125,7 @@ class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'), nullable=False)
-    appointment_date = db.Column(db.DateTime, nullable=False)
+    appointment_datetime = db.Column(db.DateTime, nullable=False)
 
 # venue_category_table = db.Table('venue_category',
 #     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
