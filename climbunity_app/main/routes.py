@@ -135,7 +135,7 @@ def add_to_project_list(route_id):
     flash(f"{route.name} added to project list")
     return redirect(url_for("main.user_detail", user_id=current_user.id))
 
-# delete
+# update / delete
 @main.route('/remove_from_project_list/<route_id>', methods=['POST'])
 @login_required
 def remove_from_project_list(route_id):
@@ -144,6 +144,43 @@ def remove_from_project_list(route_id):
     db.session.commit()
     flash(f"{route.name} removed from project list")
     return redirect(url_for("main.user_detail", user_id=current_user.id))
+
+######################
+#  ascent routes
+######################
+
+# create
+@main.route('/log_ascent/<route_id>', methods=['POST'])
+@login_required
+def log_ascent(route_id):
+    route = Route.query.get(route_id)
+    form = AscentForm()
+    if form.validate_on_submit():
+        new_ascent = Ascent(
+            user_id = current_user.id,
+            route_id = route.id,
+            send_date = form.ascent_date.data,
+            send_type = form.ascent_type.data,
+            send_rating = form.rating.data,
+            send_comments = form.comments.data
+        )
+        db.session.add(new_ascent)
+        db.session.commit()
+        flash('New ascent was logged successfully.')
+        return redirect(url_for('main.route_detail', route_id=route.id))
+    return render_template('new_ascent.html', route_id=route.id, route=route, form=form)
+
+# update
+
+# delete
+# @main.route('/remove_ascent/<route_id>', methods=['POST'])
+# @login_required
+# def remove_ascent(route_id):
+#     route = Route.query.get(route_id)
+#     current_user.user_projects.remove(route)
+#     db.session.commit()
+#     flash(f"{route.name} removed from project list")
+#     return redirect(url_for("main.user_detail", user_id=current_user.id))
 
 ######################
 #  profile routes

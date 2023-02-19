@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>User Profile</h1>
-
-<p> {{ user.username }}</p>
+<h1> {{ user.username }}'s Profile</h1>
 
 <h2>Current Projects</h2>
 
@@ -17,6 +15,7 @@
     {% endfor %}
 {% else %}
 <p>No projects are currently being tracked.</p>
+
 {% endif %}
 
 {% endblock %}
