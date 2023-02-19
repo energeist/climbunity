@@ -88,6 +88,9 @@ class Route(db.Model):
     projecting_users = db.relationship('User',
         secondary='user_project_lists', back_populates='user_projects'
     )
+    ascents_on_route = db.relationship('Ascent',
+        secondary='route_ascent_lists', back_populates='routes_ascended')
+
 
     def __str__(self):
         return f'{self.name}'
@@ -109,6 +112,14 @@ class Ascent(db.Model):
     send_type = db.Column(db.Enum(SendType))
     send_rating = db.Column(db.Integer)
     send_comments = db.Column(db.String)
+    routes_ascended = db.relationship('Route',
+        secondary="route_ascent_lists", back_populates='ascents_on_route'
+    )
+
+route_ascents_table = db.Table('route_ascent_lists',
+    db.Column('route_id', db.Integer, db.ForeignKey('route.id')),
+    db.Column('ascent_id', db.Integer, db.ForeignKey('ascent.id')),
+)
 
 class Appointment(db.Model):
     """Appointment model"""

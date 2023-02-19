@@ -15,7 +15,27 @@
     {% endfor %}
 {% else %}
 <p>No projects are currently being tracked.</p>
-
 {% endif %}
 
+<h2>Recent Ascents</h2>
+{% if ascents %}
+    <div>
+        {% for ascent in ascents %}
+            <p>{{ ascent.send_date }} - <a href="/route/{{ ascent.route_id }}" >{{ ascent.routes_ascended[0].name }}</a></p>
+            {% if ascent.send_rating %}
+                <p>Rating: {{ ascent.send_rating }}/5</p> 
+            {% endif %}
+            {% if ascent.send_comments %}
+                <p>Comments {{ ascent.send_comments }}</p>
+            {% endif %}
+            <p></p>
+        {% endfor %}
+    </div>
+{% else %}
+    {% if current_user.id == user.id %}
+        You haven't logged any ascents yet!
+    {% else %}
+        {{ user.first_name }} {{ user.last_name }} has not logged any ascents yet!
+    {% endif %}  
+{% endif %}
 {% endblock %}

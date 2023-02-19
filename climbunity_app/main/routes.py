@@ -164,6 +164,7 @@ def log_ascent(route_id):
             send_rating = form.rating.data,
             send_comments = form.comments.data
         )
+        route.ascents_on_route.append(new_ascent)
         db.session.add(new_ascent)
         db.session.commit()
         flash('New ascent was logged successfully.')
@@ -191,6 +192,9 @@ def log_ascent(route_id):
 @main.route('/profile/<user_id>', methods=['GET', 'POST'])
 def user_detail(user_id):
     user = User.query.get(user_id)
+    ascents = Ascent.query.filter_by(user_id=user_id).limit(5).all()
+    for ascent in ascents:
+        print(ascent)
     if current_user.id == user.id:
         # form = SignUpForm(obj=user)
         # if form.validate_on_submit():
@@ -208,11 +212,11 @@ def user_detail(user_id):
             # user.address = form.address.data
             # user.has_gear = form.has_gear.data
             # flash('User profile was edited successfully.')
-        return render_template('user_detail.html', user=user)  
+        return render_template('user_detail.html', ascents=ascents, user=user)  
         # return redirect(url_for('main.user_detail', user_id=user.id))
     else:
         user = User.query.get(user_id)
-        return render_template('user_detail.html', user=user)    
+        return render_template('user_detail.html', ascents=ascents, user=user)    
 
 ######################
 #  appointment routes
