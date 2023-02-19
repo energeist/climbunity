@@ -8,8 +8,8 @@
 <h2>All Venues</h2>
 
 {% for venue in all_venues %}
-<div class="store">
-    {{ venue.name }} - 
+<div class="venue">
+    <a href="/venue/{{ venue.id }}">{{ venue.name }}</a> - 
     <p><strong>Address:</strong> {{ venue.address }}</p>
 </div>
 {% endfor %}

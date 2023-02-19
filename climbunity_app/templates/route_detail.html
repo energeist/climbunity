@@ -7,9 +7,9 @@
 <p><img src="{{ route.photo_url }}" width="250px" height="250px"></p>    
 {% endif %}
 
-<p><strong>Venue:</strong> ${{ route.venue_id }}</p>
+<p><strong>Venue:</strong> {{ route.venue_id }}</p>
 
-<p><strong>Grade:</strong> ${{ route.grade }}</p>
+<p><strong>Grade:</strong> {{ route.grade }}</p>
 
 <p><strong>Set Date:</strong> {{ route.route_set_date }}</p>
 
@@ -17,11 +17,16 @@
 
 <p><strong>Route set by user ID:</strong> {{ route.setter_id }}</p>
 
-<form method="POST" action="/add_to_shopping_list/{{ route.id }}">
-    <input type="submit" value="Add to cart!">
+{% if current_user.username %}
+    
+<form method="POST" action="/add_to_project_list/{{ route.id }}">
+    <input type="submit" value="Project this!">
+</form>
+<form method="POST" action="/log_ascent/{{ route.id }}">
+    <input type="submit" value="Log ascent!">
 </form>
 
-<h2>Edit Item</h2>
+<h2>Edit route details</h2>
 
 <form method="POST" action="{{ url_for('main.route_detail', route_id=route.id) }}">
     {{ form.csrf_token }}
@@ -46,5 +51,7 @@
         {{ form.route_takedown_date }}
     </fieldset>
 </form>
+
+{% endif %}
 
 {% endblock %}

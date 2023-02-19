@@ -9,17 +9,19 @@
 
 <p><strong>Description:</strong> {{ venue.description }}</p>
 
-<h2>Routes (not done yet)</h2>
+<h2>Routes</h2>
 
-<div class="items">
-    {% for item in venue.routes %}
+<div class="routes">
+    {% for route in routes %}
     <div class="route-details">
-        <a href="/route/{{ route.id }}"><img src="{{ route.photo_url }}" alt="{{ route.name }}" width="200px">
+        <a href="/route/{{ route.id }}">
         <p><strong>{{ route.name }}</strong></p></a>
-        <p><strong>Grade: ${{ route.grade }}</strong></p>
+        <p><strong>Grade: {{ route.grade }}</strong></p>
     </div>
     {% endfor %}
 </div>
+
+{% if current_user.username %}
 
 <h2>Edit Venue</h2>
 
@@ -42,5 +44,7 @@
         {{ form.submit }}
     </fieldset>
 </form>
+
+{% endif %}
 
 {% endblock %}

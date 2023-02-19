@@ -6,6 +6,7 @@ from datetime import date, datetime
 from climbunity_app.utils import FormEnum
 from climbunity_app.models import *
 from climbunity_app.main.forms import *
+from climbunity_app.auth.forms import *
 
 from climbunity_app.extensions import app, db, bcrypt
 
@@ -23,8 +24,11 @@ def homepage():
         print(venue.name)
     return render_template('home.html', all_venues=all_venues)
 
-# venue routes
+######################
+#  venue routes
+######################
 
+# create
 @main.route('/new_venue', methods=['GET', 'POST'])
 @login_required
 def new_venue():
@@ -42,9 +46,12 @@ def new_venue():
         return redirect(url_for('main.venue_detail', venue_id=new_venue.id))
     return render_template('new_venue.html', form=form)
 
+# read and update
 @main.route('/venue/<venue_id>', methods=['GET', 'POST'])
 def venue_detail(venue_id):
     venue = Venue.query.get(venue_id)
+    routes = Route.query.filter_by(venue_id=venue_id).all()
+    print(routes)
     form = VenueForm(obj=venue)
 
     if form.validate_on_submit():
@@ -57,10 +64,13 @@ def venue_detail(venue_id):
         return redirect(url_for('main.venue_detail', venue_id=venue.id))
 
     venue = Venue.query.get(venue_id)
-    return render_template('venue_detail.html', form=form, venue=venue)
+    return render_template('venue_detail.html', form=form, routes=routes, venue=venue)
 
-# climbing route routes 
+######################
+#  climbing route routes
+######################
 
+# create
 @main.route('/new_route', methods=['GET', 'POST'])
 @login_required
 def new_route():
@@ -87,6 +97,7 @@ def new_route():
         return redirect(url_for('main.route_detail', route_id=new_route.id))
     return render_template('new_route.html', form=form)
 
+# read and update
 @main.route('/route/<route_id>', methods=['GET', 'POST'])
 def route_detail(route_id):
     route = Route.query.get(route_id)
@@ -110,36 +121,67 @@ def route_detail(route_id):
     item = Route.query.get(route_id)
     return render_template('route_detail.html', form=form, route=route)
 
-# profile routes
+######################
+#  project list routes
+######################
 
+# create
+@main.route('/add_to_project_list/<route_id>', methods=['POST'])
+@login_required
+def add_to_project_list(route_id):
+    route = Route.query.get(route_id)
+    current_user.user_projects.append(route)
+    db.session.commit()
+    flash(f"{route.name} added to project list")
+    return redirect(url_for("main.user_detail", user_id=current_user.id))
+
+# delete
+@main.route('/remove_from_project_list/<route_id>', methods=['POST'])
+@login_required
+def remove_from_project_list(route_id):
+    route = Route.query.get(route_id)
+    current_user.user_projects.remove(route)
+    db.session.commit()
+    flash(f"{route.name} removed from project list")
+    return redirect(url_for("main.user_detail", user_id=current_user.id))
+
+######################
+#  profile routes
+######################
+
+# user creation route is in auth routes
+# read and update
 @main.route('/profile/<user_id>', methods=['GET', 'POST'])
 def user_detail(user_id):
     user = User.query.get(user_id)
     if current_user.id == user.id:
-        form = UserForm(obj=user)
-        if form.validate_on_submit():
-            image_exists = os.path.exists(f'/static/img/{form.photo_url.data}')
-            print(f"image exists: {image_exists}")
-            if image_exists:
-                image_url = form.photo_url.data
-            else:
-                image_url = '/static/img/no_image.jpeg'
-            hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            user.username=form.username.data
-            user.password=hashed_password
-            user.email = form.email.data
-            user.first_name = form.first_name.data
-            user.last_name = form.last_name.data
-            user.address = form.address.data
-            user.has_gear = form.has_gear.data
-            flash('User was edited successfully.')
-            return redirect(url_for('main.user_detail', user_id=user.id))
+        # form = SignUpForm(obj=user)
+        # if form.validate_on_submit():
+            # image_exists = os.path.exists(f'/static/img/{form.photo_url.data}')
+            # print(f"image exists: {image_exists}")
+            # if image_exists:
+            #     image_url = form.photo_url.data
+            # else:
+            #     image_url = '/static/img/no_image.jpeg'
+            # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            # user.password=hashed_password
+            # user.email = form.email.data
+            # user.first_name = form.first_name.data
+            # user.last_name = form.last_name.data
+            # user.address = form.address.data
+            # user.has_gear = form.has_gear.data
+            # flash('User profile was edited successfully.')
+        return render_template('user_detail.html', user=user)  
+        # return redirect(url_for('main.user_detail', user_id=user.id))
     else:
         user = User.query.get(user_id)
         return render_template('user_detail.html', user=user)    
 
-# appointment routes
+######################
+#  appointment routes
+######################
 
+# create 
 @main.route('/new_appointment', methods=['GET', 'POST'])
 @login_required
 def new_appointment():
@@ -165,20 +207,14 @@ def new_appointment():
         print(datetime.today())
     return render_template('new_appointment.html', form=form)
 
-@main.route('/appointment/<appointment_id>', methods=['GET', 'POST'])
-def appointment_detail(appointment_id):
-    appointment = Route.query.get(appointment_id)
-    form = RouteForm(obj=appointment)
-    if form.validate_on_submit():
-        image_exists = os.path.exists(f'/static/img/{form.photo_url.data}')
-        print(f"image exists: {image_exists}")
-        if image_exists:
-            image_url = form.photo_url.data
-        else:
-            image_url = '/static/img/no_image.jpeg'
-        appointment.appointment_date = form.appointment_date.data
-        db.session.commit()
-        flash('Route was edited successfully.')
-        return redirect(url_for('main.route_detail', route_id=route.id))
-    item = Route.query.get(route_id)
-    return render_template('route_detail.html', form=form, route=route)
+# @main.route('/appointment/<appointment_id>', methods=['GET', 'POST'])
+# def appointment_detail(appointment_id):
+#     appointment = Route.query.get(appointment_id)
+#     form = AppointmentForm(obj=appointment)
+#     if form.validate_on_submit():
+#         appointment.appointment_date = form.appointment_date.data
+#         db.session.commit()
+#         flash('Route was edited successfully.')
+#         return redirect(url_for('main.route_detail', route_id=route.id))
+#     item = Route.query.get(route_id)
+#     return render_template('route_detail.html', form=form, route=route)

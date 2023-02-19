@@ -31,6 +31,13 @@ import enum
 #     STEEP = "Steeply overhung"
 #     ROOF = "Features a roof section"
 
+class SendType(FormEnum):
+    ONSIGHT = "Onsight send"
+    REDPOINT = "Redpoint send"
+    SEND = "Fell/hung and finished route"
+    ABANDON = "Abandoned ascent"
+    FLASH = "Flash"
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False, unique=True)
@@ -41,6 +48,9 @@ class User(UserMixin, db.Model):
     address = db.Column(db.String(200), nullable=False)
     has_gear = db.Column(db.Boolean, nullable=False)
     # climber_styles = db.relationship('Category', secondary='user_category')
+    user_projects = db.relationship('Route',
+        secondary='user_project_lists', back_populates='projecting_users'
+    )
 
     def __repr__(self):
         return f'<User: {self.username}>'
@@ -75,12 +85,30 @@ class Route(db.Model):
     photo_url = db.Column(URLType)
     route_set_date = db.Column(db.Date)
     route_takedown_date = db.Column(db.Date)
+    projecting_users = db.relationship('User',
+        secondary='user_project_lists', back_populates='user_projects'
+    )
 
     def __str__(self):
-        return f'{self.title}'
+        return f'{self.name}'
 
     def __repr__(self):
         return f'{self.name}'
+
+project_lists_table = db.Table('user_project_lists',
+    db.Column('route_id', db.Integer, db.ForeignKey('route.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+)
+
+class Ascent(db.Model):
+    """Ascent model"""
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    route_id = db.Column(db.Integer, db.ForeignKey('route.id'), nullable=False)
+    send_date = db.Column(db.Date)
+    send_type = db.Column(db.Enum(SendType))
+    send_rating = db.Column(db.Integer)
+    send_comments = db.Column(db.String)
 
 class Appointment(db.Model):
     """Appointment model"""
@@ -88,8 +116,6 @@ class Appointment(db.Model):
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'), nullable=False)
     appointment_date = db.Column(db.DateTime, nullable=False)
-
-
 
 # venue_category_table = db.Table('venue_category',
 #     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
