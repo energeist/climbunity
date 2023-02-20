@@ -42,7 +42,7 @@
     {% if user.user_appointments %}
         <div>
             {% for appointment in user.user_appointments %}
-                <p>{{ appointment.appointment_datetime }} @ <a href="/venue/{{ appointment.venue_id }}" >{{ appointment.venue_id }}</a></p>
+                <p>{{ appointment.appointment_datetime }} @ <a href="/venue/{{ appointment.venue_id }}" >{{ appointment.appointment_venues[0] }}</a></p>
             {% endfor %}
         </div>
     {% else %}

@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, SubmitField, FloatField, PasswordField, IntegerField, RadioField
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms import StringField, SelectField, SubmitField, FloatField, PasswordField, IntegerField, RadioField, SelectMultipleField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.validators import DataRequired, Length, URL, ValidationError, NumberRange
 from climbunity_app.utils import FormEnum
 from climbunity_app.models import *
@@ -51,6 +51,8 @@ class AscentForm(FlaskForm):
 class AppointmentForm(FlaskForm):
     """Form for creating an appointment"""
     # DateTimeLocal is being an absolute pain in my ass so we're doing this oldschool
+    # users=User.query.all()
+    # print(list(users))
     appointment_date = DateField(
         'Appointment Date',
         validators=[DataRequired()]
@@ -62,6 +64,9 @@ class AppointmentForm(FlaskForm):
     venue_id = QuerySelectField('Venue', 
         query_factory=lambda: Venue.query, 
         validators=[DataRequired()])
+    additional_guests = QuerySelectMultipleField('Additional guests',
+        query_factory=lambda: User.query
+        )
 
     # This needs some work
 

@@ -28,6 +28,13 @@
             <li class="error">{{ error }}</li>
         {% endfor %}
         </ul>
+        {{ form.additional_guests.label }}
+        {{ form.additional_guests }}
+        <ul>
+        {% for error in form.additional_guests.errors %}
+            <li class="error">{{ error }}</li>
+        {% endfor %}
+        </ul>
 
         {{ form.submit }}
     </fieldset>

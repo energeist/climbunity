@@ -238,18 +238,23 @@ def new_appointment():
             venue_id=form.venue_id.data.id,
             appointment_datetime=manmade_horrors 
         )
-        current_user.user_appointments.append(new_appointment)
+        current_user.user_appointments.append(new_appointment) # append to creator event list
+        if form.additional_guests.data:
+            for guest in form.additional_guests.data:
+                guest.user_appointments.append(new_appointment)
+        venue = Venue.query.filter_by(id=new_appointment.venue_id).one()
+        venue.booked_appointments.append(new_appointment)
         db.session.add(new_appointment)
         db.session.commit()
         flash('New appointment was created successfully.')
         return redirect(url_for("main.user_detail", user_id=current_user.id))
-    else:
+    # else:
         # new_appointment = Appointment(
         #     created_by=current_user.id,
         #     venue_id=form.venue_id.data.id,
         #     appointment_datetime=manmade_horrors 
         # )
-        print("no validatorino or new form")
+        # print("no validatorino or new form")
     return render_template('new_appointment.html', form=form)
 
 # @main.route('/appointment/<appointment_id>', methods=['GET', 'POST'])
