@@ -51,9 +51,14 @@ class User(UserMixin, db.Model):
     user_projects = db.relationship('Route',
         secondary='user_project_lists', back_populates='projecting_users'
     )
+    user_appointments = db.relationship('Appointment',
+        secondary='appointment_guests', back_populates='appointment_attendants')
+
+    def __str__(self):
+        return f'{self.username}'
 
     def __repr__(self):
-        return f'<User: {self.username}>'
+        return f'{self.username}'
 
 # climber_category_table = db.Table('user_category',
 #     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
@@ -67,6 +72,9 @@ class Venue(db.Model):
     address = db.Column(db.String(80), nullable=False)
     open_hours = db.Column(db.Text(1000))
     description = db.Column(db.Text(1000))
+    booked_appointments = db.relationship('Appointment',
+        secondary='venue_bookings', back_populates='appointment_venues'
+    )
     # venue_type = db.relationship('Category', secondary='venue_category')
 
     def __str__(self):
@@ -115,6 +123,12 @@ class Ascent(db.Model):
         secondary="route_ascent_lists", back_populates='ascents_on_route'
     )
 
+    # def __str__(self):
+    #     return f'{self.name}'
+
+    # def __repr__(self):
+    #     return f'{self.name}'
+
 route_ascents_table = db.Table('route_ascent_lists',
     db.Column('route_id', db.Integer, db.ForeignKey('route.id')),
     db.Column('ascent_id', db.Integer, db.ForeignKey('ascent.id')),
@@ -126,6 +140,27 @@ class Appointment(db.Model):
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'), nullable=False)
     appointment_datetime = db.Column(db.DateTime, nullable=False)
+    appointment_attendants = db.relationship('User',
+        secondary='appointment_guests', back_populates='user_appointments'
+    )
+    appointment_venues = db.relationship('Venue',
+        secondary='venue_bookings', back_populates='booked_appointments'
+    )
+    # def __str__(self):
+    #     return f'{self.id}'
+
+    # def __repr__(self):
+    #     return f'{self.id}'
+
+appointment_guest_lists = db.Table('appointment_guests',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('appointment_id', db.Integer, db.ForeignKey('appointment.id'))
+)
+
+venue_booking_lists = db.Table('venue_bookings',
+    db.Column('venue_id', db.Integer, db.ForeignKey('venue.id')),
+    db.Column('appointment_id', db.Integer, db.ForeignKey('appointment.id'))
+)
 
 # venue_category_table = db.Table('venue_category',
 #     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),

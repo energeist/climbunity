@@ -3,6 +3,7 @@ from os.path import exists
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from datetime import date, datetime
+import time
 from climbunity_app.utils import FormEnum
 from climbunity_app.models import *
 from climbunity_app.main.forms import *
@@ -228,35 +229,27 @@ def user_detail(user_id):
 def new_appointment():
     form = AppointmentForm()
     if form.validate_on_submit():
-        print(f"form.appointment_date.data: {form.appointment_date.data}")
-        print(form.appointment_date.data)
-        print(f"form.appointment_time.data: {form.appointment_time.data}")
+        print(f"datetime.today {datetime.today()}")
+        print(f"datetime.time {datetime.time(datetime.now())}") # might come out as UTC depending on settings
         manmade_horrors = datetime.combine(form.appointment_date.data, form.appointment_time.data)
-        # manmade_horrors = datetime.strftime(str(form.appointment_date.data) + " " + str(form.appointment_time.data))
         print(f"manmade horrors beyond my comprehension: {manmade_horrors}")
-        print(f"typeof manmade_horrors: {type(manmade_horrors)}")
         new_appointment = Appointment(
-            created_by=current_user,
-            venue_id=1,
+            created_by=current_user.id,
+            venue_id=form.venue_id.data.id,
             appointment_datetime=manmade_horrors 
         )
+        current_user.user_appointments.append(new_appointment)
         db.session.add(new_appointment)
-        print(new_appointment.appointment_datetime)
-        # db.session.commit()
+        db.session.commit()
         flash('New appointment was created successfully.')
-        return redirect(url_for('main.appointment_detail', appointment_id=new_appointment.id))
+        return redirect(url_for("main.user_detail", user_id=current_user.id))
     else:
-        new_appointment = Appointment(
-            created_by=current_user,
-            venue_id=1,
-            # appointment_datetime=manmade_horrors 
-            # appointment_date=form.appointment_date.data,
-            # appointment_time=form.appointment_time.data
-        )
-        print(new_appointment.created_by)
-        print(f"new_appt.appointment_datetime: {new_appointment.appointment_datetime}")
-        print(f"datetime.now(): {datetime.now()}")
-        print("no validatorino")
+        # new_appointment = Appointment(
+        #     created_by=current_user.id,
+        #     venue_id=form.venue_id.data.id,
+        #     appointment_datetime=manmade_horrors 
+        # )
+        print("no validatorino or new form")
     return render_template('new_appointment.html', form=form)
 
 # @main.route('/appointment/<appointment_id>', methods=['GET', 'POST'])

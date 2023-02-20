@@ -28,7 +28,6 @@
             {% if ascent.send_comments %}
                 <p>Comments {{ ascent.send_comments }}</p>
             {% endif %}
-            <p></p>
         {% endfor %}
     </div>
 {% else %}
@@ -37,5 +36,17 @@
     {% else %}
         {{ user.first_name }} {{ user.last_name }} has not logged any ascents yet!
     {% endif %}  
+{% endif %}
+{% if user.id == current_user.id %}
+    <h2>Upcoming Appointments</h2>
+    {% if user.user_appointments %}
+        <div>
+            {% for appointment in user.user_appointments %}
+                <p>{{ appointment.appointment_datetime }} @ <a href="/venue/{{ appointment.venue_id }}" >{{ appointment.venue_id }}</a></p>
+            {% endfor %}
+        </div>
+    {% else %}
+        
+    {% endif %}
 {% endif %}
 {% endblock %}

@@ -50,19 +50,33 @@ class AscentForm(FlaskForm):
 
 class AppointmentForm(FlaskForm):
     """Form for creating an appointment"""
+    # DateTimeLocal is being an absolute pain in my ass so we're doing this oldschool
     appointment_date = DateField(
-        'Appointment Date'
-        # validators=[DataRequired()]
+        'Appointment Date',
+        validators=[DataRequired()]
     )
     appointment_time = TimeField(
-        'Appointment Time'
-        # validators=[DataRequired()]
+        'Appointment Time',
+        validators=[DataRequired()]
     )
     venue_id = QuerySelectField('Venue', 
         query_factory=lambda: Venue.query, 
         validators=[DataRequired()])
-    # def validate_datetime(self, appointment_datetime):
-    #     if appointment_datetime.data < datetime.now():
-    #         raise ValidationError("The appointment cannot be in the past!")
-    # appointment_time = TimeField('Appointment Time')
+
+    # This needs some work
+
+    def validate_appointment_date(self, appointment_date):
+        print(appointment_date)
+        print(type(datetime.date(datetime.now())))
+        print(type(appointment_date.data))
+        print(appointment_date.data)
+        if appointment_date.data >= datetime.date(datetime.now()):
+            return True
+        else:
+            raise ValidationError("The appointment date cannot be in the past!")
+
+    def validate_appointment_time(self, appointment_time):
+        if self.validate_appointment_date and appointment_time.data < datetime.time(datetime.now()):
+            raise ValidationError("Appointments must be made for the future")
+        
     submit = SubmitField('Submit')
