@@ -230,13 +230,13 @@ def new_appointment():
     form = AppointmentForm()
     if form.validate_on_submit():
         print(f"datetime.today {datetime.today()}")
-        print(f"datetime.time {datetime.time(datetime.now())}") # might come out as UTC depending on settings
-        manmade_horrors = datetime.combine(form.appointment_date.data, form.appointment_time.data)
-        print(f"manmade horrors beyond my comprehension: {manmade_horrors}")
+        # print(f"datetime.time {datetime.time(datetime.now())}") # might come out as UTC depending on settings
+        # manmade_horrors = datetime.combine(form.appointment_date.data, form.appointment_time.data)
+        # print(f"manmade horrors beyond my comprehension: {manmade_horrors}")
         new_appointment = Appointment(
             created_by=current_user.id,
             venue_id=form.venue_id.data.id,
-            appointment_datetime=manmade_horrors 
+            appointment_datetime=form.appointment_datetime.data
         )
         current_user.user_appointments.append(new_appointment) # append to creator event list
         if form.additional_guests.data:

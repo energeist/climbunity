@@ -7,17 +7,10 @@
     {{ form.csrf_token }}
     <fieldset>
         <legend>Please enter information for this appointment:</legend>
-        {{ form.appointment_date.label }}
-        {{ form.appointment_date }}
+        {{ form.appointment_datetime.label }}
+        {{ form.appointment_datetime }}
         <ul>
-        {% for error in form.appointment_date.errors %}
-            <li class="error">{{ error }}</li>
-        {% endfor %}
-        </ul>
-        {{ form.appointment_time.label }}
-        {{ form.appointment_time }}
-        <ul>
-        {% for error in form.appointment_time.errors %}
+        {% for error in form.appointment_datetime.errors %}
             <li class="error">{{ error }}</li>
         {% endfor %}
         </ul>

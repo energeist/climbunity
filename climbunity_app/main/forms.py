@@ -9,6 +9,11 @@ from climbunity_app.extensions import app, db, bcrypt
 from wtforms.fields.html5 import DateField, TimeField, DateTimeField, DateTimeLocalField
 # from flask_login import current_user
 
+# TODO: add route tags and styles to route creation form, display tags and styles on routes in views
+# TODO: datetime validation
+# TODO: filter by style when adding users to a route (query route style and validate style, then query users with that style)
+# TODO: add data and go nuts
+
 class VenueForm(FlaskForm):
     """Form for adding/updating a Venue."""
     name = StringField('Venue Name',
@@ -53,12 +58,17 @@ class AscentForm(FlaskForm):
 class AppointmentForm(FlaskForm):
     """Form for creating an appointment"""
     # DateTimeLocal is being an absolute pain in my ass so we're doing this oldschool
-    appointment_date = DateField(
-        'Appointment Date',
-        validators=[DataRequired()]
-    )
-    appointment_time = TimeField(
-        'Appointment Time',
+    # appointment_date = DateField(
+    #     'Appointment Date',
+    #     validators=[DataRequired()]
+    # )
+    # appointment_time = TimeField(
+    #     'Appointment Time',
+    #     validators=[DataRequired()]
+    # )
+    appointment_datetime = DateTimeLocalField(
+        'Appointment Date and Time',
+        format='%Y-%m-%dT%H:%M',
         validators=[DataRequired()]
     )
     venue_id = QuerySelectField('Venue', 
@@ -70,18 +80,12 @@ class AppointmentForm(FlaskForm):
     )
 
     # TODO: This validation needs some work
-    def validate_appointment_date(self, appointment_date):
-        print(appointment_date)
-        print(type(datetime.date(datetime.now())))
-        print(type(appointment_date.data))
-        print(appointment_date.data)
-        if appointment_date.data >= datetime.date(datetime.now()):
-            return True
-        else:
+    def validate_appointment_datetime(self, appointment_datetime):
+        if appointment_datetime.data <= datetime.now():
             raise ValidationError("The appointment date cannot be in the past!")
 
-    def validate_appointment_time(self, appointment_time):
-        if self.validate_appointment_date and appointment_time.data < datetime.time(datetime.now()):
-            raise ValidationError("Appointments must be made for the future")
+    # def validate_appointment_time(self, appointment_time):
+    #     if self.validate_appointment_date and appointment_time.data < datetime.time(datetime.now()):
+    #         raise ValidationError("Appointments must be made for the future")
         
     submit = SubmitField('Submit')
