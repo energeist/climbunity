@@ -5,32 +5,6 @@ from sqlalchemy.orm import backref
 from flask_login import UserMixin
 import enum
 
-# class Category(FormEnum):
-#     BOULDER = 1
-#     SPORT = 2
-#     TRAD = 3
-#     TOPROPE = 4
-#     INDOOR = 5
-#     OUTDOOR = 6
-
-# class Tag(FormEnum):
-#     DYNAMIC = "Dynamic sections"
-#     CRIMPY = "Crimp-focused"
-#     SLOPER = "Slopers"
-#     POCKET = "Pocket-pulling"
-#     CRACK = "Crack"
-#     OFFWIDTH = "Offwidth"
-#     UNDERCLING = "Undercling"
-#     FLAKE = "Prominent flake"
-#     PINCH = "Pinchy"
-#     HOOK = "Lots of heel/toe hooks"
-#     ARETE = "Features an arête"
-#     DIHEDRAL = "Features a dihedral"
-#     SLAB = "Slabby"
-#     VERTICAL = "Dead vertical"
-#     STEEP = "Steeply overhung"
-#     ROOF = "Features a roof section"
-
 class SendType(FormEnum):
     ONSIGHT = "Onsight send"
     REDPOINT = "Redpoint send"
@@ -52,7 +26,11 @@ class User(UserMixin, db.Model):
         secondary='user_project_lists', back_populates='projecting_users'
     )
     user_appointments = db.relationship('Appointment',
-        secondary='appointment_guests', back_populates='appointment_attendants')
+        secondary='appointment_guests', back_populates='appointment_attendants'
+    )
+    user_does_styles = db.relationship('Style',
+        secondary='user_style_lists', back_populates='climber_styles'
+    )
 
     def __str__(self):
         return f'{self.username}'
@@ -60,10 +38,45 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return f'{self.username}'
 
-# climber_category_table = db.Table('user_category',
-#     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-#     db.Column('category', db.Enum(Category))
-# )
+class Style(db.Model):
+    """ClimberCategory Model to associate route types and climber capabilities / preferences"""
+    # using a model because Enums were not working well for many-to-many
+    # no CRUD routes for this model because it is meant to be static, could be an admin panel thing?
+    id = db.Column(db.Integer, primary_key=True)
+    style = db.Column(db.String(8))
+    climber_styles = db.relationship('User',
+        secondary='user_style_lists', back_populates='user_does_styles'
+    )
+    route_styles = db.relationship('Route',
+        secondary='route_style_lists', back_populates='possible_route_styles'
+    )
+
+    def __str__(self):
+        return f'{self.style}'
+
+    def __repr__(self):
+        return f'{self.style}'
+    
+user_styles_table = db.Table('user_style_lists',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('style_id', db.Integer, db.ForeignKey('style.id'))
+)
+    
+class Tag(db.Model):
+    """RouteTag Model to associate route features to routes for searching"""
+    # using a model because Enums were not working well for many-to-many
+    # no CRUD routes for this model because it is meant to be static, could be an admin panel thing?
+    id = db.Column(db.Integer, primary_key=True)
+    tag = db.Column(db.String)
+    tagged_routes = db.relationship('Route',
+        secondary='route_tag_lists', back_populates='route_tags'
+    )
+
+    def __str__(self):
+        return f'{self.tag}'
+
+    def __repr__(self):
+        return f'{self.tag}'
 
 class Venue(db.Model):
     """Venue model"""
@@ -75,7 +88,6 @@ class Venue(db.Model):
     booked_appointments = db.relationship('Appointment',
         secondary='venue_bookings', back_populates='appointment_venues'
     )
-    # venue_type = db.relationship('Category', secondary='venue_category')
 
     def __str__(self):
         return f'{self.name}'
@@ -97,7 +109,14 @@ class Route(db.Model):
         secondary='user_project_lists', back_populates='user_projects'
     )
     ascents_on_route = db.relationship('Ascent',
-        secondary='route_ascent_lists', back_populates='routes_ascended')
+        secondary='route_ascent_lists', back_populates='routes_ascended'
+    )
+    possible_route_styles = db.relationship('Style',
+        secondary='route_style_lists', back_populates='route_styles'
+    )
+    route_tags = db.relationship('Tag',
+        secondary='route_tag_lists', back_populates='tagged_routes'
+    )
 
     def __str__(self):
         return f'{self.name}'
@@ -108,6 +127,16 @@ class Route(db.Model):
 project_lists_table = db.Table('user_project_lists',
     db.Column('route_id', db.Integer, db.ForeignKey('route.id')),
     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+)
+
+route_styles_table = db.Table('route_style_lists',
+    db.Column('route_id', db.Integer, db.ForeignKey('route.id')),
+    db.Column('style_id', db.Integer, db.ForeignKey('style.id'))
+)
+
+route_styles_table = db.Table('route_tag_lists',
+    db.Column('route_id', db.Integer, db.ForeignKey('route.id')),
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
 )
 
 class Ascent(db.Model):
@@ -162,7 +191,3 @@ venue_booking_lists = db.Table('venue_bookings',
     db.Column('appointment_id', db.Integer, db.ForeignKey('appointment.id'))
 )
 
-# venue_category_table = db.Table('venue_category',
-#     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-#     db.Column('category', db.Enum(Category))
-# )
