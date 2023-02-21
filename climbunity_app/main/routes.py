@@ -85,8 +85,8 @@ def new_route():
             image_url = '/static/img/no_image.jpeg'
         new_route = Route(
             name=form.name.data,
-            venue_id = form.venue_id.data,
-            setter_id = None,
+            venue_id = form.venue_id.data.id,
+            setter_id = form.setter_id.data.id,
             grade=form.grade.data,
             photo_url=image_url,
             route_set_date=form.route_set_date.data,

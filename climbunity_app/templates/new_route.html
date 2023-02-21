@@ -22,6 +22,14 @@
             <li class="error">{{ error }}</li>
         {% endfor %}
         </ul>
+
+        {{ form.setter_id.label }}
+        {{ form.setter_id }}
+        <ul>
+        {% for error in form.setter_id.errors %}
+            <li class="error">{{ error }}</li>
+        {% endfor %}
+        </ul>
         
         {{ form.grade.label }}
         {{ form.grade }}
