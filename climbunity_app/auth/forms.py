@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, SubmitField, FloatField, PasswordField, BooleanField
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.validators import DataRequired, Length, URL, ValidationError, email_validator, email
 from climbunity_app.utils import FormEnum
 from climbunity_app.models import *
@@ -29,6 +29,9 @@ class SignUpForm(FlaskForm):
     address = StringField(
         'Address', 
         validators=[DataRequired("You must enter your address.")]
+    )
+    climber_styles = QuerySelectMultipleField('Select your climbing styles',
+        query_factory=lambda: Style.query
     )
     has_gear = BooleanField('Have your own gear?', default="unchecked")
     submit = SubmitField('Sign Up')

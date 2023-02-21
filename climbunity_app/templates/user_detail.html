@@ -3,6 +3,16 @@
 
 <h1> {{ user.username }}'s Profile</h1>
 
+<h2>Climbing Styles</h2>
+
+{% if user.user_does_styles %}
+    <ul>
+        {% for style in user.user_does_styles %}
+            <li>{{ style }}</li>    
+        {% endfor %}
+    </ul>
+{% endif %}
+
 <h2>Current Projects</h2>
 
 {% if user.user_projects %}

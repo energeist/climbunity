@@ -38,6 +38,8 @@ class RouteForm(FlaskForm):
     photo_url = StringField('Photo URL')
     route_set_date = DateField('Route Set Date')
     route_takedown_date = DateField('Projected Route Takedown Date')
+    route_tags = QuerySelectMultipleField('Apply tags to this route',
+        query_factory=lambda: Tag.query)
     submit = SubmitField('Submit')
 
 class AscentForm(FlaskForm):
@@ -51,8 +53,6 @@ class AscentForm(FlaskForm):
 class AppointmentForm(FlaskForm):
     """Form for creating an appointment"""
     # DateTimeLocal is being an absolute pain in my ass so we're doing this oldschool
-    # users=User.query.all()
-    # print(list(users))
     appointment_date = DateField(
         'Appointment Date',
         validators=[DataRequired()]
@@ -63,13 +63,13 @@ class AppointmentForm(FlaskForm):
     )
     venue_id = QuerySelectField('Venue', 
         query_factory=lambda: Venue.query, 
-        validators=[DataRequired()])
+        validators=[DataRequired()]
+    )
     additional_guests = QuerySelectMultipleField('Additional guests',
         query_factory=lambda: User.query
-        )
+    )
 
-    # This needs some work
-
+    # TODO: This validation needs some work
     def validate_appointment_date(self, appointment_date):
         print(appointment_date)
         print(type(datetime.date(datetime.now())))

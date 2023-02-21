@@ -31,6 +31,9 @@ def signup():
         )
         db.session.add(user)
         db.session.commit()
+        for style in form.climber_styles.data:
+            user.user_does_styles.append(style)
+        db.session.commit()
         flash('Account Created.')
         return redirect(url_for('auth.login'))
     print(form.errors)
