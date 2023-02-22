@@ -102,6 +102,7 @@ def new_route():
 @main.route('/route/<route_id>', methods=['GET', 'POST'])
 def route_detail(route_id):
     route = Route.query.get(route_id)
+    route_venue = Venue.query.get(route.venue_id)
     form = RouteForm(obj=route)
     if form.validate_on_submit():
         image_exists = os.path.exists(f'/static/img/{form.photo_url.data}')
@@ -118,14 +119,15 @@ def route_detail(route_id):
         route.route_takedown_date = form.route_takedown_date.data
         db.session.commit()
         flash('Route was edited successfully.')
-        return redirect(url_for('main.route_detail', route_id=route.id))
+        return redirect(url_for('main.route_detail', route_id=route.id, route_venue=route_venue))
     item = Route.query.get(route_id)
-    return render_template('route_detail.html', form=form, route=route)
+    return render_template('route_detail.html', form=form, route=route, route_venue=route_venue)
 
 ######################
 #  project list routes
 ######################
 
+# read on user profile pages
 # create
 @main.route('/add_to_project_list/<route_id>', methods=['POST'])
 @login_required
@@ -189,7 +191,14 @@ def log_ascent(route_id):
 ######################
 
 # user creation route is in auth routes
-# read and update
+# display all profiles
+@main.route('/users', methods=['GET', 'POST'])
+def all_users():
+    users = User.query.all()
+    return render_template('all_users.html', users=users)  
+  
+
+# read and update specific profile
 @main.route('/profile/<user_id>', methods=['GET', 'POST'])
 def user_detail(user_id):
     user = User.query.get(user_id)
@@ -214,7 +223,6 @@ def user_detail(user_id):
             # user.has_gear = form.has_gear.data
             # flash('User profile was edited successfully.')
         return render_template('user_detail.html', ascents=ascents, user=user)  
-        # return redirect(url_for('main.user_detail', user_id=user.id))
     else:
         user = User.query.get(user_id)
         return render_template('user_detail.html', ascents=ascents, user=user)    
@@ -229,10 +237,6 @@ def user_detail(user_id):
 def new_appointment():
     form = AppointmentForm()
     if form.validate_on_submit():
-        print(f"datetime.today {datetime.today()}")
-        # print(f"datetime.time {datetime.time(datetime.now())}") # might come out as UTC depending on settings
-        # manmade_horrors = datetime.combine(form.appointment_date.data, form.appointment_time.data)
-        # print(f"manmade horrors beyond my comprehension: {manmade_horrors}")
         new_appointment = Appointment(
             created_by=current_user.id,
             venue_id=form.venue_id.data.id,
@@ -248,14 +252,17 @@ def new_appointment():
         db.session.commit()
         flash('New appointment was created successfully.')
         return redirect(url_for("main.user_detail", user_id=current_user.id))
-    # else:
-        # new_appointment = Appointment(
-        #     created_by=current_user.id,
-        #     venue_id=form.venue_id.data.id,
-        #     appointment_datetime=manmade_horrors 
-        # )
-        # print("no validatorino or new form")
     return render_template('new_appointment.html', form=form)
+
+# join (update with new user)
+@main.route('/join_appointment/<appointment_id>', methods=['POST'])
+@login_required
+def join_appointment(appointment_id):
+    appointment = Appointment.query.get(appointment_id)
+    current_user.user_appointments.append(appointment)
+    db.session.commit()
+    flash(f"You've joined an appointment!")
+    return redirect(url_for("main.user_detail", user_id=current_user.id))
 
 # @main.route('/appointment/<appointment_id>', methods=['GET', 'POST'])
 # def appointment_detail(appointment_id):

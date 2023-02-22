@@ -53,6 +53,12 @@ input[type=submit] {
     margin-bottom: 10px;
 }
 
+.user {
+    border: 1px solid black;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
 .routes {
     display: flex;
     flex-direction: row;

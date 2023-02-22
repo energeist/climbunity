@@ -15,7 +15,10 @@
                 <p>{{ message }}</p>
             {% endfor %}
             <nav>
-                <a href="/">Home</a>
+                <div>
+                    <a href="/">Home</a>
+                    <a href="/users">Users</a>
+                </div>
                 <div>
                     <!-- ONLY SHOW THESE WHEN LOGGED IN -->
                     {% if current_user.is_authenticated %}

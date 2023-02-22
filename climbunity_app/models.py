@@ -21,7 +21,6 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     address = db.Column(db.String(200), nullable=False)
     has_gear = db.Column(db.Boolean, nullable=False)
-    # climber_styles = db.relationship('Category', secondary='user_category')
     user_projects = db.relationship('Route',
         secondary='user_project_lists', back_populates='projecting_users'
     )
@@ -83,8 +82,8 @@ class Venue(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     address = db.Column(db.String(80), nullable=False)
-    open_hours = db.Column(db.Text(1000))
-    description = db.Column(db.Text(1000))
+    open_hours = db.Column(db.String(1000))
+    description = db.Column(db.String(1000))
     booked_appointments = db.relationship('Appointment',
         secondary='venue_bookings', back_populates='appointment_venues'
     )
@@ -175,6 +174,7 @@ class Appointment(db.Model):
     appointment_venues = db.relationship('Venue',
         secondary='venue_bookings', back_populates='booked_appointments'
     )
+
     # def __str__(self):
     #     return f'{self.id}'
 

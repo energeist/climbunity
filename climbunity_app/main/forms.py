@@ -39,7 +39,7 @@ class RouteForm(FlaskForm):
             Length(min=1, max=200, message="Your route name needs to be betweeen 1 and 200 chars")
         ])
     venue_id = QuerySelectField('Gym / Crag',
-        query_factory=lambda: Venue.query) ## change this to a select field with queryfactory for venues
+        query_factory=lambda: Venue.query)
     setter_id = QuerySelectField('Route Setter',
         query_factory=lambda: User.query)
     grade = StringField('Route Grade')
@@ -54,7 +54,7 @@ class AscentForm(FlaskForm):
     """Form for logging a route ascent"""
     ascent_date = DateField("Date of ascent", validators=[DataRequired()])
     ascent_type = SelectField("Type of ascent", choices=SendType.choices(), validators=[DataRequired()])
-    rating = RadioField("Personal route rating", choices=[range(6)])
+    rating = RadioField("Personal route rating", choices=range(6))
     comments = StringField("Comments", validators=[Length(max=1000, message="Please limit comments to 1000 characters.")])
     submit = SubmitField('Submit')
 
