@@ -29,6 +29,7 @@ def signup():
             address = form.address.data,
             has_gear = form.has_gear.data,
         )
+        print(user.has_gear)
         db.session.add(user)
         db.session.commit()
         for style in form.climber_styles.data:
