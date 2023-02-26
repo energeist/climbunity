@@ -10,7 +10,6 @@ from wtforms.fields.html5 import DateField, TimeField, DateTimeField, DateTimeLo
 # from flask_login import current_user
 
 # TODO: filter by style when adding users to a route (query route style and validate style, then query users with that style)
-# TODO: write tests
 
 class VenueForm(FlaskForm):
     """Form for adding/updating a Venue."""
@@ -37,7 +36,9 @@ class RouteForm(FlaskForm):
             Length(min=1, max=200, message="Your route name needs to be betweeen 1 and 200 chars")
         ])
     venue_id = QuerySelectField('Gym / Crag',
-        query_factory=lambda: Venue.query)
+        query_factory=lambda: Venue.query,
+        validators=[DataRequired()]
+        )
     setter_id = QuerySelectField('Route Setter',
         query_factory=lambda: User.query)
     grade = StringField('Route Grade')

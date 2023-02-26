@@ -241,7 +241,7 @@ def edit_user_detail(user_id):
     routes = Route.query.all()
     user = User.query.get(user_id)
     ascents = Ascent.query.filter_by(user_id=user_id).limit(5).all()
-    form = SignUpForm(obj=user)
+    form = EditProfileForm(obj=user)
     if current_user == user:
         if form.validate_on_submit():
             user.first_name = form.first_name.data
