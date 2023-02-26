@@ -38,6 +38,22 @@
             <li class="error">{{ error }}</li>
         {% endfor %}
         </ul>
+
+        {{ form.route_styles.label }}
+        {{ form.route_styles }}
+        <ul>
+        {% for error in form.route_styles.errors %}
+            <li class="error">{{ error }}</li>
+        {% endfor %}
+        </ul>
+
+        {{ form.route_tags.label }}
+        {{ form.route_tags }}
+        <ul>
+        {% for error in form.route_tags.errors %}
+            <li class="error">{{ error }}</li>
+        {% endfor %}
+        </ul>
         
         {{ form.photo_url.label }}
         {{ form.photo_url }}

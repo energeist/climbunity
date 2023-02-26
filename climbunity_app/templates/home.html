@@ -11,6 +11,9 @@
 <div class="venue">
     <a href="/venue/{{ venue.id }}">{{ venue.name }}</a> - 
     <p><strong>Address:</strong> {{ venue.address }}</p>
+    <form method="POST" action="/delete_venue/{{ venue.id }}">
+        <input type="submit" value="Delete venue">
+    </form>
 </div>
 {% endfor %}
 

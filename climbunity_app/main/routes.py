@@ -67,6 +67,17 @@ def venue_detail(venue_id):
     venue = Venue.query.get(venue_id)
     return render_template('venue_detail.html', form=form, routes=routes, venue=venue)
 
+# delete -- This route isn't actually being used but it's here just for funsies.  Don't want to mess up my database too badly!
+
+@main.route('/delete_venue/<venue_id>', methods=['POST'])
+@login_required
+def delete_venue(venue_id):
+    venue = Venue.query.get(venue_id)
+    db.session.delete(venue)
+    db.session.commit()
+    flash(f"{venue.name} deleted!")
+    return redirect(url_for("main.homepage"))
+
 ######################
 #  climbing route routes
 ######################
@@ -94,7 +105,12 @@ def new_route():
         )
         db.session.add(new_route)
         db.session.commit()
-        flash('New item was created successfully.')
+        for style in form.route_styles.data:
+            new_route.possible_route_styles.append(style)
+        for tag in form.route_tags.data:
+            new_route.route_tags.append(tag)
+        db.session.commit()
+        flash('New route was created successfully.')
         return redirect(url_for('main.route_detail', route_id=new_route.id))
     return render_template('new_route.html', form=form)
 
@@ -103,6 +119,7 @@ def new_route():
 def route_detail(route_id):
     route = Route.query.get(route_id)
     route_venue = Venue.query.get(route.venue_id)
+    setter = User.query.get(route.setter_id)
     form = RouteForm(obj=route)
     if form.validate_on_submit():
         image_exists = os.path.exists(f'/static/img/{form.photo_url.data}')
@@ -119,9 +136,20 @@ def route_detail(route_id):
         route.route_takedown_date = form.route_takedown_date.data
         db.session.commit()
         flash('Route was edited successfully.')
-        return redirect(url_for('main.route_detail', route_id=route.id, route_venue=route_venue))
+        return redirect(url_for('main.route_detail', route_id=route.id, route_venue=route_venue, setter=setter))
     item = Route.query.get(route_id)
-    return render_template('route_detail.html', form=form, route=route, route_venue=route_venue)
+    return render_template('route_detail.html', form=form, route=route, route_venue=route_venue, setter=setter)
+
+# delete
+
+@main.route('/delete_route/<route_id>', methods=['POST'])
+@login_required
+def delete_route(route_id):
+    route = Route.query.get(route_id)
+    db.session.delete(route)
+    db.session.commit()
+    flash(f"{route.name} deleted!")
+    return redirect(url_for("main.venue_detail", venue_id=route.venue_id))
 
 ######################
 #  project list routes
@@ -177,14 +205,14 @@ def log_ascent(route_id):
 # update
 
 # delete
-# @main.route('/remove_ascent/<route_id>', methods=['POST'])
-# @login_required
-# def remove_ascent(route_id):
-#     route = Route.query.get(route_id)
-#     current_user.user_projects.remove(route)
-#     db.session.commit()
-#     flash(f"{route.name} removed from project list")
-#     return redirect(url_for("main.user_detail", user_id=current_user.id))
+@main.route('/remove_ascent/<route_id>', methods=['POST'])
+@login_required
+def remove_ascent(route_id):
+    route = Route.query.get(route_id)
+    current_user.user_projects.remove(route)
+    db.session.commit()
+    flash(f"{route.name} removed from project list")
+    return redirect(url_for("main.user_detail", user_id=current_user.id))
 
 ######################
 #  profile routes
@@ -255,6 +283,7 @@ def new_appointment():
     return render_template('new_appointment.html', form=form)
 
 # join (update with new user)
+
 @main.route('/join_appointment/<appointment_id>', methods=['POST'])
 @login_required
 def join_appointment(appointment_id):

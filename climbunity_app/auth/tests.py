@@ -9,7 +9,7 @@ from climbunity_app.models import SendType, User, Style, Tag, Venue, Route, Asce
 
 """
 Run these tests with the command:
-python -m unittest books_app.main.tests
+python -m unittest climbunity_app.main.tests
 ^^^ might not work, use
 python3 -m unittest discover instead
 """
@@ -111,21 +111,21 @@ class AuthTests(TestCase):
     #     response_text = response.get_data(as_text=True)
     #     self.assertIn("No user with that username", response_text)
 
-    # def test_login_incorrect_password(self):
-    #     # TODO: Write a test for the login route. It should:
-    #     # - Create a user
-    #     # - Make a POST request to /login, sending the created username &
-    #     #   an incorrect password
-    #     # - Check that the login form is displayed again, with an appropriate
-    #     #   error message
-    #     create_user()
-    #     post_data = {
-    #         "username": "me1",
-    #         "password": "totallylegit"
-    #     }
-    #     response = (self.app.post('/login', data=post_data, follow_redirects=True))
-    #     response_text = response.get_data(as_text=True)
-    #     self.assertIn("Password doesn&#39;t match", response_text)
+    def test_login_incorrect_password(self):
+        # TODO: Write a test for the login route. It should:
+        # - Create a user
+        # - Make a POST request to /login, sending the created username &
+        #   an incorrect password
+        # - Check that the login form is displayed again, with an appropriate
+        #   error message
+        create_user()
+        post_data = {
+            "username": "me1",
+            "password": "totallylegit"
+        }
+        response = (self.app.post('/login', data=post_data, follow_redirects=True))
+        response_text = response.get_data(as_text=True)
+        self.assertIn("Password doesn&#39;t match", response_text)
 
     # def test_logout(self):
     #     # TODO: Write a test for the logout route. It should:

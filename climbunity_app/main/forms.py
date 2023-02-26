@@ -46,6 +46,8 @@ class RouteForm(FlaskForm):
     photo_url = StringField('Photo URL')
     route_set_date = DateField('Route Set Date')
     route_takedown_date = DateField('Projected Route Takedown Date')
+    route_styles = QuerySelectMultipleField('What type of route is this?',
+        query_factory=lambda: Style.query)
     route_tags = QuerySelectMultipleField('Apply tags to this route',
         query_factory=lambda: Tag.query)
     submit = SubmitField('Submit')
