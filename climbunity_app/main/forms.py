@@ -9,10 +9,8 @@ from climbunity_app.extensions import app, db, bcrypt
 from wtforms.fields.html5 import DateField, TimeField, DateTimeField, DateTimeLocalField
 # from flask_login import current_user
 
-# TODO: add route tags and styles to route creation form, display tags and styles on routes in views
 # TODO: filter by style when adding users to a route (query route style and validate style, then query users with that style)
 # TODO: write tests
-# TODO: add data and go nuts
 
 class VenueForm(FlaskForm):
     """Form for adding/updating a Venue."""

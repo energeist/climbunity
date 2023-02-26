@@ -68,7 +68,6 @@ def venue_detail(venue_id):
     return render_template('venue_detail.html', form=form, routes=routes, venue=venue)
 
 # delete -- This route isn't actually being used but it's here just for funsies.  Don't want to mess up my database too badly!
-
 @main.route('/delete_venue/<venue_id>', methods=['POST'])
 @login_required
 def delete_venue(venue_id):
@@ -141,7 +140,6 @@ def route_detail(route_id):
     return render_template('route_detail.html', form=form, route=route, route_venue=route_venue, setter=setter)
 
 # delete
-
 @main.route('/delete_route/<route_id>', methods=['POST'])
 @login_required
 def delete_route(route_id):
@@ -285,7 +283,6 @@ def new_appointment():
     return render_template('new_appointment.html', form=form)
 
 # join (update with new user)
-
 @main.route('/join_appointment/<appointment_id>', methods=['POST'])
 @login_required
 def join_appointment(appointment_id):
@@ -296,7 +293,6 @@ def join_appointment(appointment_id):
     return redirect(url_for("main.user_detail", user_id=current_user.id))
 
 # delete
-
 @main.route('/delete_appointment/<appointment_id>', methods=['POST'])
 @login_required
 def delete_appointment(appointment_id):
