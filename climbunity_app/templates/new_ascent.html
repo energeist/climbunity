@@ -7,7 +7,7 @@
     {{ form.csrf_token }}
     <fieldset>
         <legend>Ascent details:</legend>
-        <p>{{ route.name }} - {{ route.grade }} @ gymgoeshere</p>
+        <p>{{ route.name }} - {{ route.grade }} @ {{ venue.name }}</p>
         {{ form.ascent_date.label }}
         {{ form.ascent_date }}
         <ul>

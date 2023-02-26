@@ -185,6 +185,7 @@ def remove_from_project_list(route_id):
 @login_required
 def log_ascent(route_id):
     route = Route.query.get(route_id)
+    venue = Venue.query.get(route.venue_id)
     form = AscentForm()
     if form.validate_on_submit():
         new_ascent = Ascent(
@@ -199,8 +200,8 @@ def log_ascent(route_id):
         db.session.add(new_ascent)
         db.session.commit()
         flash('New ascent was logged successfully.')
-        return redirect(url_for('main.route_detail', route_id=route.id))
-    return render_template('new_ascent.html', route_id=route.id, route=route, form=form)
+        return redirect(url_for('main.route_detail', route_id=route.id, venue=venue))
+    return render_template('new_ascent.html', route_id=route.id, route=route, venue=venue, form=form)
 
 # delete (no update)
 @main.route('/delete_ascent/<ascent_id>', methods=['POST'])
@@ -294,14 +295,15 @@ def join_appointment(appointment_id):
     flash(f"You've joined an appointment!")
     return redirect(url_for("main.user_detail", user_id=current_user.id))
 
-# @main.route('/appointment/<appointment_id>', methods=['GET', 'POST'])
-# def appointment_detail(appointment_id):
-#     appointment = Route.query.get(appointment_id)
-#     form = AppointmentForm(obj=appointment)
-#     if form.validate_on_submit():
-#         appointment.appointment_date = form.appointment_date.data
-#         db.session.commit()
-#         flash('Route was edited successfully.')
-#         return redirect(url_for('main.route_detail', route_id=route.id))
-#     item = Route.query.get(route_id)
-#     return render_template('route_detail.html', form=form, route=route)
+# delete
+
+@main.route('/delete_appointment/<appointment_id>', methods=['POST'])
+@login_required
+def delete_appointment(appointment_id):
+    appointment = Appointment.query.get(appointment_id)
+    appointment.appointment_attendants.clear()
+    appointment.appointment_venues.clear()
+    db.session.delete(appointment)
+    db.session.commit()
+    flash(f"You've joined an appointment!")
+    return redirect(url_for("main.user_detail", user_id=current_user.id))
