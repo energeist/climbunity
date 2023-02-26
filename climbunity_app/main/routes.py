@@ -202,16 +202,16 @@ def log_ascent(route_id):
         return redirect(url_for('main.route_detail', route_id=route.id))
     return render_template('new_ascent.html', route_id=route.id, route=route, form=form)
 
-# update
-
-# delete
-@main.route('/remove_ascent/<route_id>', methods=['POST'])
+# delete (no update)
+@main.route('/delete_ascent/<ascent_id>', methods=['POST'])
 @login_required
-def remove_ascent(route_id):
-    route = Route.query.get(route_id)
-    current_user.user_projects.remove(route)
+def delete_ascent(ascent_id):
+    ascent = Ascent.query.get(ascent_id)
+    route = Route.query.get(ascent.route_id)
+    route.ascents_on_route.remove(ascent)
+    db.session.delete(ascent)
     db.session.commit()
-    flash(f"{route.name} removed from project list")
+    flash(f"{route.name} removed from ascent list")
     return redirect(url_for("main.user_detail", user_id=current_user.id))
 
 ######################
@@ -225,10 +225,10 @@ def all_users():
     users = User.query.all()
     return render_template('all_users.html', users=users)  
   
-
 # read and update specific profile
 @main.route('/profile/<user_id>', methods=['GET', 'POST'])
 def user_detail(user_id):
+    routes = Route.query.all()
     user = User.query.get(user_id)
     ascents = Ascent.query.filter_by(user_id=user_id).limit(5).all()
     for ascent in ascents:
@@ -251,10 +251,10 @@ def user_detail(user_id):
             user.address = form.address.data
             user.has_gear = form.has_gear.data
             flash('User profile was edited successfully.')
-        return render_template('user_detail.html', ascents=ascents, user=user)  
+        return render_template('user_detail.html', routes=routes, ascents=ascents, user=user)  
     else:
         user = User.query.get(user_id)
-        return render_template('user_detail.html', ascents=ascents, user=user)    
+        return render_template('user_detail.html', routes=routes, ascents=ascents, user=user)    
 
 ######################
 #  appointment routes
