@@ -21,8 +21,6 @@ main = Blueprint("main", __name__)
 @main.route('/')
 def homepage():
     all_venues = Venue.query.all()
-    # for venue in all_venues:
-    #     print(venue.name)
     return render_template('home.html', all_venues=all_venues)
 
 ######################
@@ -120,7 +118,6 @@ def route_detail(route_id):
     form = RouteForm(obj=route)
     if form.validate_on_submit():
         image_exists = os.path.exists(f'/static/img/{form.photo_url.data}')
-        # print(f"image exists: {image_exists}")
         if image_exists:
             image_url = form.photo_url.data
         else:
@@ -179,7 +176,7 @@ def remove_from_project_list(route_id):
 ######################
 
 # create
-@main.route('/log_ascent/<route_id>', methods=['POST'])
+@main.route('/log_ascent/<route_id>', methods=['GET','POST'])
 @login_required
 def log_ascent(route_id):
     route = Route.query.get(route_id)
@@ -246,10 +243,7 @@ def edit_user_detail(user_id):
     ascents = Ascent.query.filter_by(user_id=user_id).limit(5).all()
     form = SignUpForm(obj=user)
     if current_user == user:
-        print(form.data)
-        print(form.validate_on_submit())
         if form.validate_on_submit():
-            print("thing")
             user.first_name = form.first_name.data
             user.last_name = form.last_name.data
             user.address = form.address.data
@@ -261,7 +255,6 @@ def edit_user_detail(user_id):
         user = user.query.get(current_user.id)
         response = redirect(url_for("main.user_detail", user_id=user.id, form=form, follow_redirects=True))
         response_text = response.get_data(as_text=True)
-        print(response_text)  
     else:
         user = User.query.get(user_id)
     return render_template('user_detail.html', routes=routes, ascents=ascents, user=user, form=form)

@@ -470,31 +470,60 @@ class MainTests(unittest.TestCase):
         self.assertIn("<p>You&#39;ve joined an appointment!</p>", response_text)
         self.assertEqual(len(user.user_appointments), 1)
 
-    # def test_create_ascent(self):
-    #     """Test creating an appointment."""
-    #     # Set up
-    #     create_user()
-    #     create_venue()
-    #     create_route()
-    #     login(self.app, 'me1', 'password123')
+    def test_create_ascent(self):
+        """Test creating an ascent."""
+        # Set up
+        create_user()
+        create_venue()
+        create_route()
+        login(self.app, 'me1', 'password123')
 
-    #     route = Route.query.get(1)
-    #     # Make POST request with data
-    #     post_data = {
-    #         'user_id':1,
-    #         'route_id':route.id,
-    #         'send_date':'2023-02-26',
-    #         'send_rating':5
-    #     }
-    #     response = self.app.post(f'/log_ascent/{route.id}', data=post_data, follow_redirects=True)
-    #     response_text = response.get_data(as_text=True)
-    #     print(response_text)
-    #     # Make sure the ascent was created properly
-    #     ascent = Ascent.query.one()
-    #     self.assertIsNotNone(ascent)
-    #     self.assertEqual(ascent.rating, '5')
-    #     self.assertEqual(ascent.send_date, '2023-02-26')
+        route = Route.query.get(1)
+        # Make POST request with data
+        post_data = {
+            'user_id':1,
+            'route_id':route.id,
+            'ascent_type':'ONSIGHT',
+            'ascent_date':'2022-02-02',
+            'rating':5
+        }
+        response = self.app.post(f'/log_ascent/{route.id}', data=post_data, follow_redirects=True)
+        response_text = response.get_data(as_text=True)
 
+        # Make sure the ascent was created properly
+        ascent = Ascent.query.one()
+        self.assertIsNotNone(ascent)
+        self.assertEqual(ascent.send_rating, 5)
+        self.assertEqual(ascent.send_date, date(2022,2,2))
 
+    def test_remove_ascent(self):
+        """Test removing an ascent."""
+        # Set up
+        create_user()
+        create_venue()
+        create_route()
+        login(self.app, 'me1', 'password123')
+
+        route = Route.query.get(1)
+        # Make POST request with data
+        post_data = {
+            'user_id':1,
+            'route_id':route.id,
+            'ascent_type':'ONSIGHT',
+            'ascent_date':'2022-02-02',
+            'rating':5
+        }
+        response = self.app.post(f'/log_ascent/{route.id}', data=post_data, follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+        
+        # Make sure the ascent was created properly
+        ascent = Ascent.query.one()
+        self.assertIsNotNone(ascent)
+        self.assertEqual(ascent.send_rating, 5)
+        self.assertEqual(ascent.send_date, date(2022,2,2))
+
+        response = self.app.post(f'/delete_ascent/{ascent.id}', data=post_data, follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+        self.assertIn("<p>Silence removed from ascent list</p>", response_text)
 
 
