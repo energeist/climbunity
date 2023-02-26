@@ -6,15 +6,16 @@
 <p><em>Get out and add to your tick list!</em></p>
 
 <h2>All Venues</h2>
-
 {% for venue in all_venues %}
-<div class="venue">
-    <a href="/venue/{{ venue.id }}">{{ venue.name }}</a> - 
-    <p><strong>Address:</strong> {{ venue.address }}</p>
-    <form method="POST" action="/delete_venue/{{ venue.id }}">
-        <input type="submit" value="Delete venue">
-    </form>
-</div>
+    <div class="venue">
+        <a href="/venue/{{ venue.id }}">{{ venue.name }}</a> - 
+        <p><strong>Address:</strong> {{ venue.address }}</p>
+        {% if current_user.is_authenticated %}
+            <form method="POST" action="/delete_venue/{{ venue.id }}">
+                <input type="submit" value="Delete venue">
+            </form>
+        {% endif %}
+    </div>
 {% endfor %}
 
 {% endblock %}

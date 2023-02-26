@@ -3,8 +3,8 @@ import unittest
 import app
 
 from datetime import date
-from books_app.extensions import app, db, bcrypt
-from books_app.models import Book, Author, User, Audience, Genre
+from climbunity_app.extensions import app, db, bcrypt
+from climbunity_app.models import Book, Author, User, Audience, Genre
 
 """
 Run these tests with the command:

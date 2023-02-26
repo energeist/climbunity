@@ -4,7 +4,7 @@
 <h1>Route - {{ route.name }}</h1>
 
 {% if route.photo_url %}
-<p><img src="{{ route.photo_url }}" width="250px" height="250px"></p>    
+    <p><img src="{{ route.photo_url }}" width="250px" height="250px"></p>    
 {% endif %}
 
 <p><strong>Venue:</strong> {{ route_venue }}</p>
@@ -31,13 +31,16 @@
     {% endfor %}
 </ul>
 
-{% if current_user.username %}
+{% if current_user.is_authenticated %}
     
 <form method="POST" action="/add_to_project_list/{{ route.id }}">
     <input type="submit" value="Project route!">
 </form>
 <form method="POST" action="/log_ascent/{{ route.id }}">
     <input type="submit" value="Log an ascent!">
+</form>
+<form method="POST" action="/delete_route/{{ route.id }}">
+    <input type="submit" value="Delete route">
 </form>
 
 <h2>Edit route details</h2>

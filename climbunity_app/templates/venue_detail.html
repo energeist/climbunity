@@ -17,15 +17,17 @@
         <a href="/route/{{ route.id }}">
         <p><strong>{{ route.name }}</strong></p></a>
         <p><strong>Grade: {{ route.grade }}</strong></p>
-        <form method="POST" action="/add_to_project_list/{{ route.id }}">
-            <input type="submit" value="Project route!">
-        </form>
-        <form method="POST" action="/log_ascent/{{ route.id }}">
-            <input type="submit" value="Log an ascent!">
-        </form>
-        <form method="POST" action="/delete_route/{{ route.id }}">
-            <input type="submit" value="Delete route">
-        </form>
+        {% if current_user.is_authenticated %}
+            <form method="POST" action="/add_to_project_list/{{ route.id }}">
+                <input type="submit" value="Project route!">
+            </form>
+            <form method="POST" action="/log_ascent/{{ route.id }}">
+                <input type="submit" value="Log an ascent!">
+            </form>
+            <form method="POST" action="/delete_route/{{ route.id }}">
+                <input type="submit" value="Delete route">
+            </form>
+        {% endif %}
     </div>
     {% endfor %}
 </div>

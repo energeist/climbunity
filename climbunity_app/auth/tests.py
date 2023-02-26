@@ -9,7 +9,7 @@ from climbunity_app.models import SendType, User, Style, Tag, Venue, Route, Asce
 
 """
 Run these tests with the command:
-python -m unittest climbunity_app.main.tests
+python -m unittest climbunity_app.auth.tests
 ^^^ might not work, use
 python3 -m unittest discover instead
 """
@@ -26,7 +26,7 @@ def create_user():
         email='test123@test.com',
         first_name='Test',
         last_name='User',
-        address='123 Test. St.',
+        address='123 Test. St',
         has_gear=True
         )
     db.session.add(user)

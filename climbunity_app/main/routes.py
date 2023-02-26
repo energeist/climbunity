@@ -233,23 +233,24 @@ def user_detail(user_id):
     ascents = Ascent.query.filter_by(user_id=user_id).limit(5).all()
     for ascent in ascents:
         print(ascent)
-    if current_user.id == user.id:
-        # form = SignUpForm(obj=user)
-        # if form.validate_on_submit():
-            # image_exists = os.path.exists(f'/static/img/{form.photo_url.data}')
-            # print(f"image exists: {image_exists}")
-            # if image_exists:
-            #     image_url = form.photo_url.data
-            # else:
-            #     image_url = '/static/img/no_image.jpeg'
-            # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            # user.password=hashed_password
-            # user.email = form.email.data
-            # user.first_name = form.first_name.data
-            # user.last_name = form.last_name.data
-            # user.address = form.address.data
-            # user.has_gear = form.has_gear.data
-            # flash('User profile was edited successfully.')
+    print(current_user == user)
+    if current_user == user:
+        form = SignUpForm(obj=user)
+        if form.validate_on_submit():
+            image_exists = os.path.exists(f'/static/img/{form.photo_url.data}')
+            print(f"image exists: {image_exists}")
+            if image_exists:
+                image_url = form.photo_url.data
+            else:
+                image_url = '/static/img/no_image.jpeg'
+            hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            user.password=hashed_password
+            user.email = form.email.data
+            user.first_name = form.first_name.data
+            user.last_name = form.last_name.data
+            user.address = form.address.data
+            user.has_gear = form.has_gear.data
+            flash('User profile was edited successfully.')
         return render_template('user_detail.html', ascents=ascents, user=user)  
     else:
         user = User.query.get(user_id)
