@@ -21,8 +21,8 @@ main = Blueprint("main", __name__)
 @main.route('/')
 def homepage():
     all_venues = Venue.query.all()
-    for venue in all_venues:
-        print(venue.name)
+    # for venue in all_venues:
+    #     print(venue.name)
     return render_template('home.html', all_venues=all_venues)
 
 ######################
@@ -52,11 +52,10 @@ def new_venue():
 def venue_detail(venue_id):
     venue = Venue.query.get(venue_id)
     routes = Route.query.filter_by(venue_id=venue_id).all()
-    print(routes)
     form = VenueForm(obj=venue)
 
     if form.validate_on_submit():
-        venue.name = form.venue.data
+        venue.name = form.name.data
         venue.address = form.address.data
         venue.open_hours = form.open_hours.data
         venue.description = form.description.data
@@ -88,7 +87,6 @@ def new_route():
     form = RouteForm()
     if form.validate_on_submit():
         image_exists = os.path.exists(f'../static/img/{form.photo_url.data}')
-        print(f"image exists: {image_exists}")
         if image_exists:
             image_url = form.photo_url.data
         else:
@@ -121,14 +119,15 @@ def route_detail(route_id):
     setter = User.query.get(route.setter_id)
     form = RouteForm(obj=route)
     if form.validate_on_submit():
+        print("ding")
         image_exists = os.path.exists(f'/static/img/{form.photo_url.data}')
-        print(f"image exists: {image_exists}")
+        # print(f"image exists: {image_exists}")
         if image_exists:
             image_url = form.photo_url.data
         else:
             image_url = '/static/img/no_image.jpeg'
         route.name = form.name.data
-        route.venue_id = form.venue_id.data
+        route.venue_id = form.venue_id.data.id
         route.grade = form.grade.data
         route.photo_url = image_url
         route.route_set_date = form.route_set_date.data
