@@ -40,6 +40,20 @@ def create_user():
     db.session.add(user)
     db.session.commit()
 
+def create_another_user():
+    password_hash = bcrypt.generate_password_hash('password234').decode('utf-8')
+    user2 = User(
+        username='me2',
+        password=password_hash,
+        email='test234@test.com',
+        first_name='AnotherTest',
+        last_name='User',
+        address='234 Test. St',
+        has_gear=True
+        )
+    db.session.add(user2)
+    db.session.commit()
+
 def create_venue():
     v1 = Venue(
         name = "Rock Oasis",
@@ -66,8 +80,8 @@ def create_ascent():
     user = User.query.first()
     route = Route.query.first()
     a1 = Ascent(
-        user_id = user,
-        route_id = route
+        user_id = user.id,
+        route_id = route.id
     )
     db.session.add(a1)
     db.session.commit()
@@ -76,9 +90,9 @@ def create_appointment():
     user = User.query.first()
     venue = Venue.query.first()
     apt1 = Appointment(
-        created_by = user,
-        venue_id = venue,
-        appointment_datetime = datetime.now()
+        created_by = user.id,
+        venue_id = venue.id,
+        appointment_datetime = datetime(2024,2,28,12,59)
     )
     db.session.add(apt1)
     db.session.commit()
@@ -380,7 +394,7 @@ class MainTests(unittest.TestCase):
         response_text = response.get_data(as_text=True)
         self.assertIn('<p>Silence removed from project list</p>', response_text)
 
-    def test_create_ascent(self):
+    def test_create_appointment(self):
         """Test creating an appointment."""
         # Set up
         create_user()
@@ -389,75 +403,98 @@ class MainTests(unittest.TestCase):
         login(self.app, 'me1', 'password123')
 
         route = Route.query.get(1)
-        # Make POST request with data
+        user = User.query.get(1)
+        venue = Venue.query.get(1)
+        # Make POST request with data'
+        current_datetime = datetime.now()
+        # print(current_datetime)
         post_data = {
-            'user_id':1,
-            'route_id':route.id,
-            'send_date':'2023-02-26',
-            'send_rating':5
+            'created_by':user.id,
+            'venue_id':venue.id,
+            'appointment_datetime':'2023-02-28T12:59'
         }
-        response = self.app.post(f'/log_ascent/{route.id}', data=post_data, follow_redirects=True)
+        response = self.app.post(f'/new_appointment', data=post_data, follow_redirects=True)
         response_text = response.get_data(as_text=True)
-        print(response_text)
-        # Make sure the ascent was created properly
-        ascent = Ascent.query.one()
-        self.assertIsNotNone(ascent)
-        self.assertEqual(ascent.rating, '5')
-        self.assertEqual(ascent.send_date, '2023-02-26')
+        # Make sure the appointment was created properly
+        appointment = Appointment.query.one()
+        self.assertIsNotNone(appointment)
+        self.assertEqual(appointment.created_by, 1)
+        self.assertEqual(appointment.appointment_datetime, datetime(2023,2,28,12,59))
 
-    # def test_create_genre(self):
-    #     # TODO: Create a user & login (so that the user can access the route)
+    def test_delete_appointment(self):
+        """Test deleting an appointment."""
+        # Set up
+        create_user()
+        create_venue()
+        create_route()
+        login(self.app, 'me1', 'password123')
+
+        route = Route.query.get(1)
+        user = User.query.get(1)
+        venue = Venue.query.get(1)
+        # Make POST request with data'
+        current_datetime = datetime.now()
+        # print(current_datetime)
+        post_data = {
+            'created_by':user.id,
+            'venue_id':venue.id,
+            'appointment_datetime':'2023-02-28T12:59'
+        }
+        self.app.post(f'/new_appointment', data=post_data, follow_redirects=True)
+        # Make sure the appointment was created properly
+        appointment = Appointment.query.one()
+        self.assertIsNotNone(appointment)
+        self.assertEqual(appointment.created_by, 1)
+        self.assertEqual(appointment.appointment_datetime, datetime(2023,2,28,12,59))
+
+        response = self.app.post(f'/delete_appointment/{appointment.id}', follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+        user = User.query.get(1)
+        self.assertIn("<p>Appointment deleted!</p>", response_text)
+        self.assertEqual(len(user.user_appointments), 0)
+
+    def test_join_appointment(self):
+        """Test joining an appointment."""
+        # Set up
+        create_user()
+        create_another_user()
+        create_venue()
+        create_route()
+        create_appointment()
+        login(self.app, 'me2', 'password234')
+
+        appointment = Appointment.query.get(1)
+        response = self.app.post(f'/join_appointment/{appointment.id}', follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+        user = User.query.get(2)
+        self.assertIn("<p>You&#39;ve joined an appointment!</p>", response_text)
+        self.assertEqual(len(user.user_appointments), 1)
+
+    # def test_create_ascent(self):
+    #     """Test creating an appointment."""
+    #     # Set up
     #     create_user()
-    #     login(self.app, 'me1', 'password')
+    #     create_venue()
+    #     create_route()
+    #     login(self.app, 'me1', 'password123')
 
-    #     # TODO: Make a POST request to the /create_genre route,
+    #     route = Route.query.get(1)
+    #     # Make POST request with data
     #     post_data = {
-    #         'name': 'Fantasy',
+    #         'user_id':1,
+    #         'route_id':route.id,
+    #         'send_date':'2023-02-26',
+    #         'send_rating':5
     #     }
-    #     self.app.post('/create_genre', data=post_data) 
-
-    #     # TODO: Verify that the genre was updated in the database
-    #     created_genre = Genre.query.filter_by(name='Fantasy').one()
-    #     self.assertIsNotNone(created_genre)
-    #     self.assertEqual(created_genre.name, 'Fantasy')
-
-    # def test_profile_page(self):
-    #     # TODO: Make a GET request to the /profile/me1 route
-    #     create_user()
-    #     response = self.app.get('/profile/me1', follow_redirects=True)
-    #     self.assertEqual(response.status_code, 200)
-
-    #     # TODO: Verify that the response shows the appropriate user info
+    #     response = self.app.post(f'/log_ascent/{route.id}', data=post_data, follow_redirects=True)
     #     response_text = response.get_data(as_text=True)
-    #     self.assertIn("Welcome to me1's profile", response_text)
+    #     print(response_text)
+    #     # Make sure the ascent was created properly
+    #     ascent = Ascent.query.one()
+    #     self.assertIsNotNone(ascent)
+    #     self.assertEqual(ascent.rating, '5')
+    #     self.assertEqual(ascent.send_date, '2023-02-26')
 
-    # def test_favorite_book(self):
-    #     # TODO: Login as the user me1
-    #     create_books()
-    #     create_user()
-    #     login(self.app, 'me1', 'password')
 
-    #     # TODO: Make a POST request to the /favorite/1 route
 
-    #     self.app.post('/favorite/1')
-
-    #     # TODO: Verify that the book with id 1 was added to the user's favorites
-    #     user = User.query.filter_by(id=1).one()
-    #     self.assertIn("Mockingbird", user.favorite_books[0].title)
-
-    # def test_unfavorite_book(self):
-    #     # TODO: Login as the user me1, and add book with id 1 to me1's favorites
-    #     create_books()
-    #     create_user()
-    #     login(self.app, 'me1', 'password')
-    #     self.app.post('/favorite/1')
-    #     user = User.query.filter_by(id=1).one()
-    #     self.assertIn("Mockingbird", user.favorite_books[0].title)
-
-    #     # TODO: Make a POST request to the /unfavorite/1 route
-    #     self.app.post('/unfavorite/1')
-    #     user = User.query.filter_by(id=1).one()
-    #     self.assertEqual([], user.favorite_books)
-    #     # TODO: Verify that the book with id 1 was removed from the user's 
-    #     # favorites
 

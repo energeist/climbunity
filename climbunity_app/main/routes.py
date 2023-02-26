@@ -131,6 +131,8 @@ def route_detail(route_id):
         route.photo_url = image_url
         route.route_set_date = form.route_set_date.data
         route.route_takedown_date = form.route_takedown_date.data
+        route.possible_route_styles.extend(form.route_styles.data)
+        route.route_tags.extend(form.route_tags.data)
         db.session.commit()
         flash('Route was edited successfully.')
         return redirect(url_for('main.route_detail', route_id=route.id, route_venue=route_venue, setter=setter))
@@ -230,16 +232,6 @@ def user_detail(user_id):
     ascents = Ascent.query.filter_by(user_id=user_id).limit(5).all()
     if current_user == user:
         form = SignUpForm(obj=user)
-        # if form.validate_on_submit():
-        #     hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        #     user.password=hashed_password
-        #     user.email = form.email.data
-        #     user.first_name = form.first_name.data
-        #     user.last_name = form.last_name.data
-        #     user.address = form.address.data
-        #     user.has_gear = form.has_gear.data
-        #     flash('User profile was edited successfully.')
-        #     db.session.commit()
         return render_template('user_detail.html', routes=routes, ascents=ascents, user=user, form=form)  
     else:
         user = User.query.get(user_id)
@@ -320,5 +312,5 @@ def delete_appointment(appointment_id):
     appointment.appointment_venues.clear()
     db.session.delete(appointment)
     db.session.commit()
-    flash(f"You've joined an appointment!")
+    flash(f"Appointment deleted!")
     return redirect(url_for("main.user_detail", user_id=current_user.id))
