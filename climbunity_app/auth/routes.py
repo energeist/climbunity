@@ -29,7 +29,6 @@ def signup():
             address = form.address.data,
             has_gear = form.has_gear.data,
         )
-        print(user.has_gear)
         db.session.add(user)
         db.session.commit()
         for style in form.climber_styles.data:
@@ -37,7 +36,6 @@ def signup():
         db.session.commit()
         flash('Account Created.')
         return redirect(url_for('auth.login'))
-    print(form.errors)
     return render_template('signup.html', form=form)
 
 
