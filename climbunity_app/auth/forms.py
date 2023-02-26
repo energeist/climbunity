@@ -7,7 +7,6 @@ from climbunity_app.models import *
 from climbunity_app.extensions import app, db, bcrypt
 from wtforms.fields.html5 import DateField
 
-
 class SignUpForm(FlaskForm):
     username = StringField(
         'User Name',
@@ -35,6 +34,7 @@ class SignUpForm(FlaskForm):
     )
     has_gear = BooleanField('Have your own gear?', default="unchecked")
     submit = SubmitField('Sign Up')
+    edit = SubmitField('Edit Profile')
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
@@ -45,6 +45,22 @@ class SignUpForm(FlaskForm):
         existing_email = User.query.filter_by(email=email.data).first()
         if existing_email:
             raise ValidationError('That email address is already associated with an account. Please choose a different one.')
+
+class EditProfileForm(FlaskForm):
+    first_name = StringField(
+        'First Name',
+        validators=[DataRequired(message="Your must enter your first name.")]
+    )
+    last_name = StringField('Last Name')
+    address = StringField(
+        'Address', 
+        validators=[DataRequired("You must enter your address.")]
+    )
+    climber_styles = QuerySelectMultipleField('Select your climbing styles',
+        query_factory=lambda: Style.query
+    )
+    has_gear = BooleanField('Have your own gear?', default="unchecked")
+    edit = SubmitField('Edit Profile')
 
 class LoginForm(FlaskForm):
     username = StringField('User Name',

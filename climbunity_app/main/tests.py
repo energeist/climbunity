@@ -282,39 +282,128 @@ class MainTests(unittest.TestCase):
         self.assertEqual(route.name, "Sleepwalker")
         self.assertEqual(route.grade, "V16")
 
-    # def test_create_book_logged_out(self):
-    #     """
-    #     Test that the user is redirected when trying to access the create book 
-    #     route if not logged in.
-    #     """
-    #     # Set up
-    #     create_books()
-    #     create_user()
+    def test_delete_route(self):
+    #     """Test deleting a route."""
+        create_user()
+        login(self.app, 'me1', 'password123')  
+        create_venue()
+        create_route()
 
-    #     # Make GET request
-    #     response = self.app.get('/create_book')
+        response = self.app.get('/route/1', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
 
-    #     # Make sure that the user was redirecte to the login page
-    #     self.assertEqual(response.status_code, 302)
-    #     self.assertIn('/login?next=%2Fcreate_book', response.location)
+        route = Route.query.get(1)
 
-    # def test_create_author(self):
-    #     """Test creating an author."""
-    #     # TODO: Create a user & login (so that the user can access the route)
-    #     create_user()
-    #     login(self.app, 'me1', 'password')
+        response = self.app.post('/delete_route/1', follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+        # Make sure the route was updated as we'd expect
+        self.assertIn('<p>Silence deleted!</p>', response_text)
 
-    #     # TODO: Make a POST request to the /create_author route
-    #     post_data = {
-    #         'name': 'David Eddings',
-    #         'biography': 'Guy who writes good fantasy novels'
-    #     }
-    #     self.app.post('/create_author', data=post_data)
+    def test_create_venue_logged_out(self):
+        """
+        Test that the user is redirected when trying to access the create venue 
+        route if not logged in.
+        """
+        # Set up
+        create_user()
 
-    #     # TODO: Verify that the author was updated in the database
-    #     created_author = Author.query.filter_by(name='David Eddings').one()
-    #     self.assertIsNotNone(created_author)
-    #     self.assertEqual(created_author.name, 'David Eddings')
+        # Make GET request
+        response = self.app.get('/new_venue')
+
+        # Make sure that the user was redirecte to the login page
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/login?next=%2Fnew_venue', response.location)
+
+    def test_create_route_logged_out(self):
+        """
+        Test that the user is redirected when trying to access the create route 
+        route if not logged in.
+        """
+        # Set up
+        create_user()
+
+        # Make GET request
+        response = self.app.get('/new_route')
+
+        # Make sure that the user was redirecte to the login page
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/login?next=%2Fnew_route', response.location)
+
+    def test_create_appointment_logged_out(self):
+        """
+        Test that the user is redirected when trying to access the create appointment 
+        route if not logged in.
+        """
+        # Set up
+        create_user()
+
+        # Make GET request
+        response = self.app.get('/new_appointment')
+
+        # Make sure that the user was redirecte to the login page
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/login?next=%2Fnew_appointment', response.location)
+    
+    def test_project_route(self):
+        """Test selecting a route as a project."""
+        # Set up
+        create_user()
+        create_venue()
+        create_route()
+        login(self.app, 'me1', 'password123')
+
+        route=Route.query.get(1)
+
+        response = self.app.post(f'/add_to_project_list/{route.id}', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        response_text = response.get_data(as_text=True)
+        self.assertIn('<p>Silence added to project list</p>', response_text)
+
+    def test_delete_project(self):
+        """Test removing route from project list."""
+        # Set up
+        create_user()
+        create_venue()
+        create_route()
+        login(self.app, 'me1', 'password123')
+        route=Route.query.get(1)
+
+        # add route to project list first
+        response = self.app.post(f'/add_to_project_list/{route.id}', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        response_text = response.get_data(as_text=True)
+        self.assertIn('<p>Silence added to project list</p>', response_text)
+        
+        # remove from project list
+        response = self.app.post(f'/remove_from_project_list/{route.id}', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        response_text = response.get_data(as_text=True)
+        self.assertIn('<p>Silence removed from project list</p>', response_text)
+
+    def test_create_ascent(self):
+        """Test creating an appointment."""
+        # Set up
+        create_user()
+        create_venue()
+        create_route()
+        login(self.app, 'me1', 'password123')
+
+        route = Route.query.get(1)
+        # Make POST request with data
+        post_data = {
+            'user_id':1,
+            'route_id':route.id,
+            'send_date':'2023-02-26',
+            'send_rating':5
+        }
+        response = self.app.post(f'/log_ascent/{route.id}', data=post_data, follow_redirects=True)
+        response_text = response.get_data(as_text=True)
+        print(response_text)
+        # Make sure the ascent was created properly
+        ascent = Ascent.query.one()
+        self.assertIsNotNone(ascent)
+        self.assertEqual(ascent.rating, '5')
+        self.assertEqual(ascent.send_date, '2023-02-26')
 
     # def test_create_genre(self):
     #     # TODO: Create a user & login (so that the user can access the route)

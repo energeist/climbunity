@@ -2,7 +2,8 @@
 {% block content %}
 
 <h1> {{ user.username }}'s Profile</h1>
-
+<p><strong>Name: </strong> {{ user.first_name }} {{ user.last_name }}</p>
+<p><strong>Address: </strong> {{ user.address }}</p>
 <h2>Climbing Styles</h2>
 
 {% if user.user_does_styles %}
@@ -11,6 +12,12 @@
             <li>{{ style }}</li>    
         {% endfor %}
     </ul>
+{% endif %}
+
+{% if user.has_gear %}
+    <p>{{ user.username }} has their own climbing gear.</p>
+{% else %}
+    <p>{{ user.username }} does not have their own climbing gear.</p>
 {% endif %}
 
 <h2>Current Projects</h2>
@@ -69,6 +76,52 @@
     {% else %}
         <p>You have no appointments yet!</p>
     {% endif %}
+    <h2>Edit your information</h2>
+    <form action="/edit_profile/{{ current_user.id }}" method="POST">
+        {{ form.csrf_token }}
+        <fieldset>
+        {{ form.first_name.label }}
+        {{ form.first_name }}
+        <ul>
+        {% for error in form.first_name.errors %}
+            <li class="error">{{ error }}</li>
+        {% endfor %}
+        </ul>
+        {{ form.last_name.label }}
+        {{ form.last_name }}
+        <ul>
+        {% for error in form.last_name.errors %}
+            <li class="error">{{ error }}</li>
+        {% endfor %}
+        </ul>
+
+        {{ form.address.label }}
+        {{ form.address }}
+        <ul>
+        {% for error in form.address.errors %}
+            <li class="error">{{ error }}</li>
+        {% endfor %}
+        </ul>
+
+        {{ form.climber_styles.label }}
+        {{ form.climber_styles }}
+        <ul>
+        {% for error in form.climber_styles.errors %}
+            <li class="error">{{ error }}</li>
+        {% endfor %}
+        </ul>
+
+        {{ form.has_gear.label }}
+        {{ form.has_gear }}
+        <ul>
+        {% for error in form.has_gear.errors %}
+            <li class="error">{{ error }}</li>
+        {% endfor %}
+        </ul>
+        {{ form.edit }}
+    </fieldset>
+</form>
+
 {% else %}
     <h2>{{ user.username }}'s Upcoming Appointments</h2>
     {% if user.user_appointments %}

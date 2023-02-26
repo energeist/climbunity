@@ -119,7 +119,6 @@ def route_detail(route_id):
     setter = User.query.get(route.setter_id)
     form = RouteForm(obj=route)
     if form.validate_on_submit():
-        print("ding")
         image_exists = os.path.exists(f'/static/img/{form.photo_url.data}')
         # print(f"image exists: {image_exists}")
         if image_exists:
@@ -223,36 +222,57 @@ def all_users():
     users = User.query.all()
     return render_template('all_users.html', users=users)  
   
-# read and update specific profile
+# read specific profile
 @main.route('/profile/<user_id>', methods=['GET', 'POST'])
 def user_detail(user_id):
     routes = Route.query.all()
     user = User.query.get(user_id)
     ascents = Ascent.query.filter_by(user_id=user_id).limit(5).all()
-    for ascent in ascents:
-        print(ascent)
-    print(current_user == user)
     if current_user == user:
         form = SignUpForm(obj=user)
+        # if form.validate_on_submit():
+        #     hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        #     user.password=hashed_password
+        #     user.email = form.email.data
+        #     user.first_name = form.first_name.data
+        #     user.last_name = form.last_name.data
+        #     user.address = form.address.data
+        #     user.has_gear = form.has_gear.data
+        #     flash('User profile was edited successfully.')
+        #     db.session.commit()
+        return render_template('user_detail.html', routes=routes, ascents=ascents, user=user, form=form)  
+    else:
+        user = User.query.get(user_id)
+    return render_template('user_detail.html', routes=routes, ascents=ascents, user=user)
+
+# update profile
+    
+@main.route('/edit_profile/<user_id>', methods=['GET', 'POST'])
+def edit_user_detail(user_id):
+    routes = Route.query.all()
+    user = User.query.get(user_id)
+    ascents = Ascent.query.filter_by(user_id=user_id).limit(5).all()
+    form = SignUpForm(obj=user)
+    if current_user == user:
+        print(form.data)
+        print(form.validate_on_submit())
         if form.validate_on_submit():
-            image_exists = os.path.exists(f'/static/img/{form.photo_url.data}')
-            print(f"image exists: {image_exists}")
-            if image_exists:
-                image_url = form.photo_url.data
-            else:
-                image_url = '/static/img/no_image.jpeg'
-            hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            user.password=hashed_password
-            user.email = form.email.data
+            print("thing")
             user.first_name = form.first_name.data
             user.last_name = form.last_name.data
             user.address = form.address.data
             user.has_gear = form.has_gear.data
+            user.user_does_styles.clear()
+            user.user_does_styles.extend(form.climber_styles.data)
             flash('User profile was edited successfully.')
-        return render_template('user_detail.html', routes=routes, ascents=ascents, user=user)  
+            db.session.commit()
+        user = user.query.get(current_user.id)
+        response = redirect(url_for("main.user_detail", user_id=user.id, form=form, follow_redirects=True))
+        response_text = response.get_data(as_text=True)
+        print(response_text)  
     else:
         user = User.query.get(user_id)
-        return render_template('user_detail.html', routes=routes, ascents=ascents, user=user)    
+    return render_template('user_detail.html', routes=routes, ascents=ascents, user=user, form=form)
 
 ######################
 #  appointment routes
