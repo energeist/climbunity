@@ -20,47 +20,7 @@
     <p>{{ user.username }} does not have their own climbing gear.</p>
 {% endif %}
 
-<h2>Current Projects</h2>
-
-{% if user.user_projects %}
-    {% for route in user.user_projects%}
-        <div>{{ route.name }} - {{ route.grade }}
-            {% if user == current_user %}
-                <form style="display: inline;" method="POST" action="/remove_from_project_list/{{ route.id }}">
-                    <input style="margin: 0; padding: 0;" type="submit" value="delete"/>
-                </form>
-            {% endif %}
-        </div>
-    {% endfor %}
-{% else %}
-<p>No projects are currently being tracked.</p>
-{% endif %}
-
-<h2>Recent Ascents</h2>
-{% if ascents %}
-    <div>
-        {% for ascent in ascents %}
-            <p>{{ ascent.send_date }} - <a href="/route/{{ ascent.route_id }}" > {{ ascent.routes_ascended[0].name }}</a></p>
-            {% if ascent.send_rating %}
-                <p>Rating: {{ ascent.send_rating }}/5</p> 
-            {% endif %}
-            {% if ascent.send_comments %}
-                <p>Comments {{ ascent.send_comments }}</p>
-            {% endif %}
-            {% if user == current_user %}
-            <form method="POST" action="/delete_ascent/{{ ascent.id }}">
-                <input type="submit" value="Delete ascent">
-            </form>
-            {% endif %}
-        {% endfor %}
-    </div>
-{% else %}
-    {% if current_user.id == user.id %}
-        You haven't logged any ascents yet!
-    {% else %}
-        {{ user.first_name }} {{ user.last_name }} has not logged any ascents yet!
-    {% endif %}  
-{% endif %}
+{% include 'projects_appointments.html' %}
 
 {% if user == current_user %}
     <h2>Your Upcoming Appointments</h2>
@@ -76,51 +36,8 @@
     {% else %}
         <p>You have no appointments yet!</p>
     {% endif %}
-    <h2>Edit your information</h2>
-    <form action="/edit_profile/{{ current_user.id }}" method="POST">
-        {{ form.csrf_token }}
-        <fieldset>
-        {{ form.first_name.label }}
-        {{ form.first_name }}
-        <ul>
-        {% for error in form.first_name.errors %}
-            <li class="error">{{ error }}</li>
-        {% endfor %}
-        </ul>
-        {{ form.last_name.label }}
-        {{ form.last_name }}
-        <ul>
-        {% for error in form.last_name.errors %}
-            <li class="error">{{ error }}</li>
-        {% endfor %}
-        </ul>
 
-        {{ form.address.label }}
-        {{ form.address }}
-        <ul>
-        {% for error in form.address.errors %}
-            <li class="error">{{ error }}</li>
-        {% endfor %}
-        </ul>
-
-        {{ form.climber_styles.label }}
-        {{ form.climber_styles }}
-        <ul>
-        {% for error in form.climber_styles.errors %}
-            <li class="error">{{ error }}</li>
-        {% endfor %}
-        </ul>
-
-        {{ form.has_gear.label }}
-        {{ form.has_gear }}
-        <ul>
-        {% for error in form.has_gear.errors %}
-            <li class="error">{{ error }}</li>
-        {% endfor %}
-        </ul>
-        {{ form.edit }}
-    </fieldset>
-</form>
+    {% include 'edit_profile.html' %}
 
 {% else %}
     <h2>{{ user.username }}'s Upcoming Appointments</h2>
