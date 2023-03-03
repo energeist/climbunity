@@ -7,6 +7,8 @@ Climbunity is a backend project created in Python using Flask, SQLAlchemy and Ji
 There is a live version [deployed here, on Render!](https://energeist-climbunity.onrender.com/)
 ERD for the application [can be found here](https://github.com/energeist/climbunity/blob/master/climbunity-erd.pdf)
 
+This application features User creation and authentication, CRUD routes for Venue/Route/Ascent/Appointment models and displays relevant data.
+
 ## Instructions to run locally: 
 - Clone this repository
 - Navigate to the cloned repository locally
