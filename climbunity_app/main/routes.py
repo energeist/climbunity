@@ -22,7 +22,8 @@ main = Blueprint("main", __name__)
 @main.route('/')
 def homepage():
     all_venues = Venue.query.all()
-    return render_template('home.html', all_venues=all_venues)
+    routes = Route.query.all()
+    return render_template('home.html', routes=routes, all_venues=all_venues)
 
 ######################
 #  venue routes
@@ -178,7 +179,7 @@ def add_to_project_list(route_id):
     current_user.user_projects.append(route)
     db.session.commit()
     flash(f"{route.name} added to project list")
-    return redirect(url_for("main.user_detail", user_id=current_user.id))
+    return redirect(url_for("main.route_detail", route_id = route.id, user_id=current_user.id))
 
 # update / delete
 @main.route('/remove_from_project_list/<route_id>', methods=['POST'])
@@ -244,14 +245,15 @@ def all_users():
 @main.route('/profile/<user_id>', methods=['GET', 'POST'])
 def user_detail(user_id):
     routes = Route.query.all()
+    venues = Venue.query.all()
     user = User.query.get(user_id)
-    ascents = Ascent.query.filter_by(user_id=user_id).limit(5).all()
+    ascents = Ascent.query.filter_by(user_id=user_id).all() # fine for small data but should be built out to display only 3-5 results + option to see all on different page
     if current_user == user:
         form = SignUpForm(obj=user)
-        return render_template('user_detail.html', routes=routes, ascents=ascents, user=user, form=form)  
+        return render_template('user_detail.html', routes=routes, ascents=ascents, venues=venues, user=user, form=form)  
     else:
         user = User.query.get(user_id)
-    return render_template('user_detail.html', routes=routes, ascents=ascents, user=user)
+    return render_template('user_detail.html', routes=routes, ascents=ascents, venues=venues, user=user)
 
 # update profile
     

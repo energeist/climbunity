@@ -19,7 +19,9 @@
     </fieldset>
 </form>
 {% if current_user.is_authenticated %}
-    <form method="POST" action="/delete_venue/{{ venue.id }}">
-        <input type="submit" value="Delete venue">
-    </form>
+    {% if current_user.is_admin %}
+        <form method="POST" action="/delete_venue/{{ venue.id }}">
+            <input type="submit" class="delete" value="Delete venue">
+        </form>
+    {% endif %}
 {% endif %}
