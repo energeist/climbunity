@@ -1,4 +1,4 @@
-# CLIMBUNITY
+# CLIMBUNITY - BACK-END
 ### ACS-1220 Final Project
 Created by Mark Rattle, 2023
 
@@ -17,4 +17,3 @@ This application features User creation and authentication, CRUD routes for Venu
 - Install required packages with `pip3 install -r requirements.txt`
 - Run the program with `python3 app.py`
 - Open the website either by clicking the link in your terminal, or by navigating to `http://127.0.0.1:5000/`
-
