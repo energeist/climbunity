@@ -21,13 +21,13 @@ class VenueForm(FlaskForm):
     address = StringField('Address',
     validators=[
         DataRequired(), 
-        Length(min=3, max=200, message="You need to enter a street address or general location, 3 characters min.")
+        Length(min=3, max=80, message="You need to enter a street address or general location, 3 characters min.")
     ])
     open_hours = StringField('Hours of Operation', validators=[
-        Length(min=3, max=200, message="Please limit entry to 500 characters")
+        Length(min=3, max=500, message="Please limit entry to 500 characters")
     ])
     description = StringField('Description', validators=[
-        Length(min=3, max=200, message="Please limit entry to 500 characters")
+        Length(min=3, max=500, message="Please limit entry to 500 characters")
     ])
     submit = SubmitField('Submit')
 

@@ -82,7 +82,7 @@ class Venue(db.Model):
     """Venue model"""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
-    address = db.Column(db.String(200), nullable=False)
+    address = db.Column(db.String(80), nullable=False)
     open_hours = db.Column(db.String(500))
     description = db.Column(db.String(500))
     booked_appointments = db.relationship('Appointment', back_populates='appointment_venue') # Venue <-1 -- N-> Appointment
