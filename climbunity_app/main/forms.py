@@ -21,10 +21,14 @@ class VenueForm(FlaskForm):
     address = StringField('Address',
     validators=[
         DataRequired(), 
-        Length(min=3, max=80, message="Your need to enter a street address or general location")
+        Length(min=3, max=200, message="You need to enter a street address or general location, 3 characters min.")
     ])
-    open_hours = StringField('Hours of Operation')
-    description = StringField('Description')
+    open_hours = StringField('Hours of Operation', validators=[
+        Length(min=3, max=200, message="Please limit entry to 500 characters")
+    ])
+    description = StringField('Description', validators=[
+        Length(min=3, max=200, message="Please limit entry to 500 characters")
+    ])
     submit = SubmitField('Submit')
 
 class RouteForm(FlaskForm):
@@ -33,7 +37,7 @@ class RouteForm(FlaskForm):
     name = StringField('Route Name', 
         validators=[
             DataRequired(), 
-            Length(min=1, max=80, message="Your route name needs to be betweeen 1 and 80 chars")
+            Length(min=1, max=80, message="Your route name needs to be betweeen 1 and 80 characters.")
         ])
     venue_id = QuerySelectField('Gym / Crag',
         query_factory=lambda: Venue.query,
@@ -41,7 +45,7 @@ class RouteForm(FlaskForm):
         )
     setter_id = QuerySelectField('Route Setter',
         query_factory=lambda: User.query)
-    grade = StringField('Route Grade', validators=[Length(max=10, message="Please input a simple YDS or V-grade entry, maximum 10 characters")]) 
+    grade = StringField('Route Grade', validators=[Length(max=10, message="Please input a simple YDS or V-grade entry, maximum 10 characters.")]) 
     photo_url = StringField('Photo URL')
     route_set_date = DateField('Route Set Date')
     route_takedown_date = DateField('Projected Route Takedown Date')
@@ -54,7 +58,7 @@ class RouteForm(FlaskForm):
 class AscentForm(FlaskForm):
     """Form for logging a route ascent"""
     ascent_date = DateField("Date of ascent", validators=[DataRequired()])
-    ascent_type = SelectField("Type of ascent", choices=SendType.choices(), validators=[DataRequired()])
+    ascent_type = SelectField("Type of ascent", choices=SendType.choices())
     rating = RadioField("Personal route rating", choices=[0,1,2,3,4,5])
     comments = StringField("Comments", validators=[Length(max=1000, message="Please limit comments to 1000 characters.")])
     submit = SubmitField('Submit')
