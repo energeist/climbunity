@@ -196,7 +196,7 @@ def remove_from_project_list(route_id):
 ######################
 
 # create
-@main.route('/log_ascent/<route_id>', methods=['GET','POST'])
+@main.route('/log_ascent/<route_id>', methods=['GET', 'POST'])
 @login_required
 def log_ascent(route_id):
     route = Route.query.get(route_id)

@@ -19,12 +19,7 @@
             <p><strong>{{ route.name }}</strong></p></a>
             <p><strong>Grade: {{ route.grade }}</strong></p>
             {% if current_user.is_authenticated %}
-                <form method="POST" action="/add_to_project_list/{{ route.id }}">
-                    <input type="submit" value="Project route!">
-                </form>
-                <form method="POST" action="/log_ascent/{{ route.id }}">
-                    <input type="submit" value="Log an ascent!">
-                </form>
+                {% include 'partials/project_ascent_buttons_partial.html' %}
             {% endif %}
         </div>
         {% endfor %}
