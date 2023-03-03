@@ -3,7 +3,6 @@
 <form method="POST" action="{{ url_for('main.venue_detail', venue_id=venue.id) }}">
     {{ form.csrf_token }}
     <fieldset>
-        <legend>Edit this climbing venue:</legend>
         {{ form.name.label }}
         {{ form.name }}
         

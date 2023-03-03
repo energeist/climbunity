@@ -69,6 +69,8 @@ def venue_detail(venue_id):
 @login_required
 def delete_venue(venue_id):
     venue = Venue.query.get(venue_id)
+    for appointment in venue.booked_appointments:
+        db.session.delete(appointment)
     routes = Route.query.filter_by(venue_id=venue.id).all()
     for route in routes:
         for ascent in route.ascents_on_route:
@@ -152,6 +154,8 @@ def route_detail(route_id):
 @login_required
 def delete_route(route_id):
     route = Route.query.get(route_id)
+    for ascent in route.ascents_on_route:
+        db.session.delete(ascent)
     db.session.delete(route)
     db.session.commit()
     flash(f"{route.name} deleted!")

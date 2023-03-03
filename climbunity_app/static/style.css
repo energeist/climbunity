@@ -32,6 +32,7 @@ fieldset {
     flex-direction: column;
     margin: 20px 0;
     padding: 20px;
+    border: none;
 }
 
 fieldset * {
@@ -43,7 +44,7 @@ fieldset input {
 }
 
 input[type=submit] {
-    width: 100px;
+    min-width: 100px;
     align-self: flex-end;
 }
 
@@ -84,5 +85,10 @@ input[type=submit] {
 }
 
 .header-image {
-    max-width: 600px;
+    max-width: 50%;
+}
+
+.error {
+    color: red;
+    font-weight: bolder;
 }

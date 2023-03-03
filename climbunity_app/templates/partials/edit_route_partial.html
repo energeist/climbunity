@@ -3,7 +3,6 @@
 <form method="POST" action="{{ url_for('main.route_detail', route_id=route.id) }}">
     {{ form.csrf_token }}
     <fieldset>
-        <legend>Edit this route:</legend>
         {% include 'partials/route_form_partial.html' %}
     </fieldset>
 </form>
