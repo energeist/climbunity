@@ -28,6 +28,7 @@ def signup():
             last_name = form.last_name.data,
             address = form.address.data,
             has_gear = form.has_gear.data,
+            is_admin = False
         )
         db.session.add(user)
         db.session.commit()

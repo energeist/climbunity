@@ -11,14 +11,19 @@
         </div>
     {% endfor %}
 {% else %}
-<p>No projects are currently being tracked.</p>
+    <p>No projects are currently being tracked.</p>
 {% endif %}
 
 <h2>Recent Ascents</h2>
 {% if ascents %}
     <div>
         {% for ascent in ascents %}
-            <p>{{ ascent.send_date }} - <a href="/route/{{ ascent.route_id }}" > {{ ascent.routes_ascended[0].name }}</a></p>
+            <p>{{ ascent.send_date }} - <a href="/route/{{ ascent.route_id }}" > 
+                {% for route in routes %}
+                    {% if route.id == ascent.route_id %}
+                        {{ route.name }}
+                    {% endif %}
+                {% endfor %}</a></p>
             {% if ascent.send_rating %}
                 <p>Rating: {{ ascent.send_rating }}/5</p> 
             {% endif %}
@@ -27,7 +32,7 @@
             {% endif %}
             {% if user == current_user %}
             <form method="POST" action="/delete_ascent/{{ ascent.id }}">
-                <input type="submit" value="Delete ascent">
+                <input type="submit" class="delete" value="Delete ascent">
             </form>
             {% endif %}
         {% endfor %}

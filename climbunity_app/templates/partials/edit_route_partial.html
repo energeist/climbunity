@@ -6,6 +6,8 @@
         {% include 'partials/route_form_partial.html' %}
     </fieldset>
 </form>
-<form method="POST" action="/delete_route/{{ route.id }}">
-    <input type="submit" value="Delete route">
-</form>
+{% if current_user.is_authenticated %}
+    <form method="POST" action="/delete_route/{{ route.id }}">
+        <input type="submit" class="delete" value="Delete route">
+    </form>
+{% endif %}

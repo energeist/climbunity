@@ -178,7 +178,7 @@ def add_to_project_list(route_id):
     current_user.user_projects.append(route)
     db.session.commit()
     flash(f"{route.name} added to project list")
-    return redirect(url_for("main.user_detail", user_id=current_user.id))
+    return redirect(url_for("main.route_detail", route_id = route.id, user_id=current_user.id))
 
 # update / delete
 @main.route('/remove_from_project_list/<route_id>', methods=['POST'])

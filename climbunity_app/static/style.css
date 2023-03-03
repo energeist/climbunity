@@ -48,6 +48,11 @@ input[type=submit] {
     align-self: flex-end;
 }
 
+.delete {
+    background-color: red;
+    color: white;
+}
+
 .venue {
     border: 1px solid black;
     padding: 10px;
@@ -88,7 +93,8 @@ input[type=submit] {
     max-width: 50%;
 }
 
-.error {
+.error, .admin {
     color: red;
     font-weight: bolder;
 }
+
