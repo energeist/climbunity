@@ -22,7 +22,8 @@ main = Blueprint("main", __name__)
 @main.route('/')
 def homepage():
     all_venues = Venue.query.all()
-    return render_template('home.html', all_venues=all_venues)
+    routes = Route.query.all()
+    return render_template('home.html', routes=routes, all_venues=all_venues)
 
 ######################
 #  venue routes
