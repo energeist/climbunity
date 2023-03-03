@@ -5,7 +5,7 @@
         <div>{{ route.name }} - {{ route.grade }}
             {% if user == current_user %}
                 <form style="display: inline;" method="POST" action="/remove_from_project_list/{{ route.id }}">
-                    <input style="margin: 0; padding: 0;" type="submit" value="delete"/>
+                    <input style="margin: 0; padding: 0;" type="submit" value="remove from list"/>
                 </form>
             {% endif %}
         </div>

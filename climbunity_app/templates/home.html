@@ -8,7 +8,7 @@
     <h2>Today's top venues:</h2>
     {% for venue in all_venues %}
         <div class="venue">
-            <a href="/venue/{{ venue.id }}">{{ venue.name }}</a> - Tracked routes: 
+            <a href="/venue/{{ venue.id }}">{{ venue.name }}</a> - Number of tracked routes: 
             <p><strong>Address:</strong> {{ venue.address }}</p>
             {% if current_user.is_authenticated %}
                 {% if current_user.is_admin %}

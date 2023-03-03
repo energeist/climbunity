@@ -3,10 +3,18 @@
     {% if user.user_appointments %}
         <div>
             {% for appointment in user.user_appointments %}
-                <p>{{ appointment.appointment_datetime }} @ <a href="/venue/{{ appointment.venue_id }}" >{{ appointment.appointment_venues[0] }}</a></p>
-                <form method="POST" action="/delete_appointment/{{ appointment.id }}">
-                    <input type="submit" class="delete" value="Delete appointment">
-                </form>
+                <p>{{ appointment.appointment_datetime }} @ <a href="/venue/{{ appointment.venue_id }}" >
+                    {% for venue in venues %}
+                        {% if appointment.venue_id == venue.id %}
+                            {{ venue.name }}
+                        {% endif %}
+                    {% endfor %}
+                    </a></p>
+                {% if (appointment.created_by == current_user.id) or current_user.is_admin %}
+                    <form method="POST" action="/delete_appointment/{{ appointment.id }}">
+                        <input type="submit" class="delete" value="Delete appointment">
+                    </form>
+                {% endif %}   
             {% endfor %}
         </div>
     {% else %}
@@ -17,11 +25,19 @@
     {% if user.user_appointments %}
     <div>
         {% for appointment in user.user_appointments %}
-        <p>{{ appointment.appointment_datetime }} @ <a href="/venue/{{ appointment.venue_id }}" >{{ appointment.appointment_venues[0] }}</a> 
+        <p>{{ appointment.appointment_datetime }} @ <a href="/venue/{{ appointment.venue_id }}" >
+            {% for venue in venues %}
+                {% if appointment.venue_id == venue.id %}
+                    {{ venue.name }}
+                {% endif %}
+            {% endfor %}
+            </a></p>
             {% if current_user.is_authenticated %}
-                <form method="POST" action="/join_appointment/{{ appointment.id }}">
-                    <input type="submit" value="Join Appointment!">
-                </form></p>
+                {% if appointment not in current_user.user_appointments %}
+                    <form method="POST" action="/join_appointment/{{ appointment.id }}">
+                        <input type="submit" value="Join Appointment!">
+                    </form></p>
+                {% endif %}
             {% endif %}
         {% endfor %}
     </div>  
