@@ -20,39 +20,12 @@
     <p>{{ user.username }} does not have their own climbing gear.</p>
 {% endif %}
 
-{% include 'projects_appointments.html' %}
+{% include 'partials/projects_ascents.html' %}
+
+{% include 'partials/appointments_partial.html' %}
 
 {% if user == current_user %}
-    <h2>Your Upcoming Appointments</h2>
-    {% if user.user_appointments %}
-        <div>
-            {% for appointment in user.user_appointments %}
-                <p>{{ appointment.appointment_datetime }} @ <a href="/venue/{{ appointment.venue_id }}" >{{ appointment.appointment_venues[0] }}</a></p>
-                <form method="POST" action="/delete_appointment/{{ appointment.id }}">
-                    <input type="submit" value="Delete appointment">
-                </form>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p>You have no appointments yet!</p>
-    {% endif %}
-
-    {% include 'edit_profile.html' %}
-
-{% else %}
-    <h2>{{ user.username }}'s Upcoming Appointments</h2>
-    {% if user.user_appointments %}
-    <div>
-        {% for appointment in user.user_appointments %}
-        <p>{{ appointment.appointment_datetime }} @ <a href="/venue/{{ appointment.venue_id }}" >{{ appointment.appointment_venues[0] }}</a> 
-            {% if current_user.is_authenticated %}
-                <form method="POST" action="/join_appointment/{{ appointment.id }}">
-                    <input type="submit" value="Join Appointment!">
-                </form></p>
-            {% endif %}
-        {% endfor %}
-    </div>  
-    {% endif %}
+    {% include 'partials/edit_profile_partial.html' %}
 {% endif %}
 
 {% endblock %}
