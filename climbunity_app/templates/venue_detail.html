@@ -11,26 +11,30 @@
 
 <h2>Routes</h2>
 
-<div class="routes">
-    {% for route in routes %}
-    <div class="route-details">
-        <a href="/route/{{ route.id }}">
-        <p><strong>{{ route.name }}</strong></p></a>
-        <p><strong>Grade: {{ route.grade }}</strong></p>
-        {% if current_user.is_authenticated %}
-            <form method="POST" action="/add_to_project_list/{{ route.id }}">
-                <input type="submit" value="Project route!">
-            </form>
-            <form method="POST" action="/log_ascent/{{ route.id }}">
-                <input type="submit" value="Log an ascent!">
-            </form>
-            <form method="POST" action="/delete_route/{{ route.id }}">
-                <input type="submit" value="Delete route">
-            </form>
-        {% endif %}
+{% if routes %}
+    <div class="routes">
+        {% for route in routes %}
+        <div class="route-details">
+            <a href="/route/{{ route.id }}">
+            <p><strong>{{ route.name }}</strong></p></a>
+            <p><strong>Grade: {{ route.grade }}</strong></p>
+            {% if current_user.is_authenticated %}
+                <form method="POST" action="/add_to_project_list/{{ route.id }}">
+                    <input type="submit" value="Project route!">
+                </form>
+                <form method="POST" action="/log_ascent/{{ route.id }}">
+                    <input type="submit" value="Log an ascent!">
+                </form>
+                <form method="POST" action="/delete_route/{{ route.id }}">
+                    <input type="submit" value="Delete route">
+                </form>
+            {% endif %}
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-</div>
+{% else %}
+    There are no routes listed for this venue.  You should {% if not current_user.is_authenticated %}sign up and {% endif %}add some!
+{% endif %}
 
 {% if current_user.username %}
     {% include 'partials/edit_venue_partial.html' %}

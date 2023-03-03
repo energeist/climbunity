@@ -59,6 +59,15 @@ input[type=submit] {
     margin-bottom: 10px;
 }
 
+.route-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.route-info, .route-social {
+    padding: 2em
+}
+
 .routes {
     display: flex;
     flex-direction: row;

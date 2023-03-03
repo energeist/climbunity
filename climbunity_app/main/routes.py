@@ -120,6 +120,12 @@ def route_detail(route_id):
     route = Route.query.get(route_id)
     route_venue = Venue.query.get(route.venue_id)
     setter = User.query.get(route.setter_id)
+    ratings = 0
+    rating = 0
+    if route.ascents_on_route:
+        for ascent in route.ascents_on_route:
+            ratings += ascent.send_rating
+        rating = ratings/len(route.ascents_on_route)
     form = RouteForm(obj=route)
     if form.validate_on_submit():
         image_exists = os.path.exists(f'/static/img/{form.photo_url.data}')
@@ -137,9 +143,9 @@ def route_detail(route_id):
         route.route_tags.extend(form.route_tags.data)
         db.session.commit()
         flash('Route was edited successfully.')
-        return redirect(url_for('main.route_detail', route_id=route.id, route_venue=route_venue, setter=setter))
+        return redirect(url_for('main.route_detail', route_id=route.id, route_venue=route_venue, setter=setter, rating=rating))
     item = Route.query.get(route_id)
-    return render_template('route_detail.html', form=form, route=route, route_venue=route_venue, setter=setter)
+    return render_template('route_detail.html', form=form, route=route, route_venue=route_venue, setter=setter, rating=rating)
 
 # delete
 @main.route('/delete_route/<route_id>', methods=['POST'])
