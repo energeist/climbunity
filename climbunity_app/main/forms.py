@@ -33,7 +33,7 @@ class RouteForm(FlaskForm):
     name = StringField('Route Name', 
         validators=[
             DataRequired(), 
-            Length(min=1, max=200, message="Your route name needs to be betweeen 1 and 200 chars")
+            Length(min=1, max=80, message="Your route name needs to be betweeen 1 and 80 chars")
         ])
     venue_id = QuerySelectField('Gym / Crag',
         query_factory=lambda: Venue.query,
@@ -41,7 +41,7 @@ class RouteForm(FlaskForm):
         )
     setter_id = QuerySelectField('Route Setter',
         query_factory=lambda: User.query)
-    grade = StringField('Route Grade')
+    grade = StringField('Route Grade', validators=[Length(max=10, message="Please input a simple YDS or V-grade entry, maximum 10 characters")]) 
     photo_url = StringField('Photo URL')
     route_set_date = DateField('Route Set Date')
     route_takedown_date = DateField('Projected Route Takedown Date')

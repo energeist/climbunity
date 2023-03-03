@@ -143,7 +143,7 @@ class Ascent(db.Model):
     send_date = db.Column(db.Date)
     send_type = db.Column(db.Enum(SendType))
     send_rating = db.Column(db.Integer)
-    send_comments = db.Column(db.String)
+    send_comments = db.Column(db.String(1000))
     route_ascended = db.relationship('Route', back_populates='ascents_on_route')  # Route <-1 -- N-> Ascent
 
     def __str__(self):
