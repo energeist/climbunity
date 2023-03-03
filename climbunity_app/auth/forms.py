@@ -18,16 +18,26 @@ class SignUpForm(FlaskForm):
         )
     email = StringField(
         'Email', 
-        validators=[DataRequired(message="You must input a valid email address.")]
+        validators=[
+            DataRequired(message="You must input a valid email address."), 
+            Length(max=200, message="Maximum length is 200 characters")
+        ]
         )
     first_name = StringField(
         'First Name',
-        validators=[DataRequired(message="Your must enter your first name.")]
+        validators=[
+            DataRequired(message="Your must enter your first name."),
+            Length(max=50, message="Maximum name length is 50 characters.")
+        ]
     )
-    last_name = StringField('Last Name')
+    last_name = StringField('Last Name',
+    validators=[Length(max=50, message="Maximum name length is 50 characters.")])
     address = StringField(
         'Address', 
-        validators=[DataRequired("You must enter your address.")]
+        validators=[
+            DataRequired("You must enter your address."),
+            Length(max=200, message="Maximum name length is 50 characters.")
+        ]
     )
     climber_styles = QuerySelectMultipleField('Select your climbing styles',
         query_factory=lambda: Style.query
@@ -49,13 +59,19 @@ class SignUpForm(FlaskForm):
 class EditProfileForm(FlaskForm):
     first_name = StringField(
         'First Name',
-        validators=[DataRequired(message="Your must enter your first name.")]
+        validators=[
+            DataRequired(message="Your must enter your first name."),
+            Length(max=50, message="Maximum name length is 50 characters.")
+        ]
     )
-    last_name = StringField('Last Name')
+    last_name = StringField('Last Name',
+    validators=[Length(max=50, message="Maximum name length is 50 characters.")])
     address = StringField(
         'Address', 
-        validators=[DataRequired("You must enter your address.")]
-    )
+        validators=[
+            DataRequired("You must enter your address."),
+            Length(max=200, message="Maximum name length is 50 characters.")
+        ])
     climber_styles = QuerySelectMultipleField('Select your climbing styles',
         query_factory=lambda: Style.query
     )
