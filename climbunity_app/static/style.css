@@ -73,3 +73,7 @@ input[type=submit] {
     width: 250px;
     height: 300px;
 }
+
+.header-image {
+    max-width: 600px;
+}

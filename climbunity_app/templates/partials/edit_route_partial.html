@@ -4,34 +4,7 @@
     {{ form.csrf_token }}
     <fieldset>
         <legend>Edit this route:</legend>
-        {{ form.name.label }}
-        {{ form.name }}
-
-        {{ form.venue_id.label }}
-        {{ form.venue_id }}
-
-        {{ form.setter_id.label }}
-        {{ form.setter_id }}
-        
-        {{ form.grade.label }}
-        {{ form.grade }}
-
-        {{ form.route_styles.label }}
-        {{ form.route_styles }}
-
-        {{ form.route_tags.label }}
-        {{ form.route_tags }}
-
-        {{ form.photo_url.label }}
-        {{ form.photo_url }}
-
-        {{ form.route_set_date.label }}
-        {{ form.route_set_date }}
-
-        {{ form.route_takedown_date.label }}
-        {{ form.route_takedown_date }}
-
-        {{ form.submit }}
+        {% include 'partials/route_form_partial.html' %}
     </fieldset>
 </form>
 <form method="POST" action="/delete_route/{{ route.id }}">

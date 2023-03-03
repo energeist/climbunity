@@ -1,50 +1,47 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Route - {{ route.name }}</h1>
+    <h1>Route - {{ route.name }}</h1>
 
-{% if route.photo_url %}
-    <p><img src="{{ route.photo_url }}" width="250px" height="250px"></p>    
-{% endif %}
+    {% if route.photo_url %}
+        <p><img src="{{ route.photo_url }}" width="250px" height="250px"></p>    
+    {% endif %}
 
-<p><strong>Venue:</strong> {{ route_venue }}</p>
+    <p><strong>Venue:</strong> {{ route_venue }}</p>
 
-<p><strong>Grade:</strong> {{ route.grade }}</p>
+    <p><strong>Grade:</strong> {{ route.grade }}</p>
 
-<p><strong>Set Date:</strong> {{ route.route_set_date }}</p>
+    <p><strong>Set Date:</strong> {{ route.route_set_date }}</p>
 
-<p><strong>Takedown Date:</strong> {{ route.route_takedown_date }}</p>
+    <p><strong>Takedown Date:</strong> {{ route.route_takedown_date }}</p>
 
-<p><strong>Route set by user:</strong> {{ setter }}</p>
+    <p><strong>Route set by user:</strong> {{ setter }}</p>
 
-<p><strong>Route styles:</strong></p> 
-<ul>
-    {% for style in route.possible_route_styles %}
-        <li>{{ style }}</li>
-    {% endfor %}
-</ul>
+    <p><strong>Route styles:</strong></p> 
+    <ul>
+        {% for style in route.possible_route_styles %}
+            <li>{{ style }}</li>
+        {% endfor %}
+    </ul>
 
-<p><strong>Route technical tags:</strong></p>
-<ul>
-    {% for tag in route.route_tags %}
-        <li>{{ tag }}</li>
-    {% endfor %}
-</ul>
+    <p><strong>Route technical tags:</strong></p>
+    <ul>
+        {% for tag in route.route_tags %}
+            <li>{{ tag }}</li>
+        {% endfor %}
+    </ul>
 
-{% if current_user.is_authenticated %}
-    
-<form method="POST" action="/add_to_project_list/{{ route.id }}">
-    <input type="submit" value="Project route!">
-</form>
-<form method="GET" action="/log_ascent/{{ route.id }}">
-    <input type="submit" value="Log an ascent!">
-</form>
-<form method="POST" action="/delete_route/{{ route.id }}">
-    <input type="submit" value="Delete route">
-</form>
-
-{% include 'partials/edit_route_partial.html' %}
-
-{% endif %}
+    {% if current_user.is_authenticated %}
+        <form method="POST" action="/add_to_project_list/{{ route.id }}">
+            <input type="submit" value="Project route!">
+        </form>
+        <form method="GET" action="/log_ascent/{{ route.id }}">
+            <input type="submit" value="Log an ascent!">
+        </form>
+        <form method="POST" action="/delete_route/{{ route.id }}">
+            <input type="submit" value="Delete route">
+        </form>
+        {% include 'partials/edit_route_partial.html' %}
+    {% endif %}
 
 {% endblock %}
