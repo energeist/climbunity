@@ -35,7 +35,9 @@ def signup():
             user.user_does_styles.append(style)
         db.session.commit()
         flash('Account Created.')
-        return redirect(url_for('auth.login'))
+        login_user(user, remember=True)
+        next_page = request.args.get('next')
+        return redirect(next_page if next_page else url_for('main.homepage'))
     return render_template('signup.html', form=form)
 
 

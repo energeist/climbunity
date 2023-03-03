@@ -9,7 +9,7 @@ from wtforms.fields.html5 import DateField
 
 class SignUpForm(FlaskForm):
     username = StringField(
-        'User Name',
+        'Username',
         validators=[DataRequired(), Length(min=3, max=50)]
         )
     password = PasswordField(
@@ -63,7 +63,7 @@ class EditProfileForm(FlaskForm):
     edit = SubmitField('Edit Profile')
 
 class LoginForm(FlaskForm):
-    username = StringField('User Name',
+    username = StringField('Username',
         validators=[DataRequired(), Length(min=3, max=50)])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log In')

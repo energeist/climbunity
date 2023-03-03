@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Climbunity - Find a climbing partner and spray some beta!</h1>
+<h1>Climbunity - Find a climbing partner!</h1>
 
 <p><em>Get out and add to your tick list!</em></p>
 
-<h2>All Venues</h2>
+<h2>Today's top venues:</h2>
 {% for venue in all_venues %}
     <div class="venue">
         <a href="/venue/{{ venue.id }}">{{ venue.name }}</a> - 

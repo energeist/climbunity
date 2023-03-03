@@ -1,9 +1,10 @@
 import os
+import time
+import random
 from os.path import exists
 from flask import Blueprint, request, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from datetime import date, datetime
-import time
 from climbunity_app.utils import FormEnum
 from climbunity_app.models import *
 from climbunity_app.main.forms import *
