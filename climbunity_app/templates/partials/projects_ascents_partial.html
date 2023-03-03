@@ -28,7 +28,7 @@
                 <p>Rating: {{ ascent.send_rating }}/5</p> 
             {% endif %}
             {% if ascent.send_comments %}
-                <p>Comments {{ ascent.send_comments }}</p>
+                <p>Comments: {{ ascent.send_comments }}</p>
             {% endif %}
             {% if user == current_user %}
             <form method="POST" action="/delete_ascent/{{ ascent.id }}">
