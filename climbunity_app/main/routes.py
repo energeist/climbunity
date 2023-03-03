@@ -65,11 +65,15 @@ def venue_detail(venue_id):
     venue = Venue.query.get(venue_id)
     return render_template('venue_detail.html', form=form, routes=routes, venue=venue)
 
-# delete -- This route isn't actually being used but it's here just for funsies.  Don't want to mess up my database too badly!
 @main.route('/delete_venue/<venue_id>', methods=['POST'])
 @login_required
 def delete_venue(venue_id):
     venue = Venue.query.get(venue_id)
+    routes = Route.query.filter_by(venue_id=venue.id).all()
+    for route in routes:
+        for ascent in route.ascents_on_route:
+            db.session.delete(ascent)
+        db.session.delete(route)
     db.session.delete(venue)
     db.session.commit()
     flash(f"{venue.name} deleted!")
