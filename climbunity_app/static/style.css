@@ -46,11 +46,19 @@ fieldset input {
 input[type=submit], .logAscent {
     min-width: 100px;
     align-self: flex-end;
+    cursor: pointer;
 }
 
 .delete {
     background-color: red;
     color: white;
+    cursor: pointer;
+}
+
+.delete:hover {
+    background-color: black;
+    color: red;
+    cursor: pointer;
 }
 
 .venue {
