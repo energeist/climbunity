@@ -8,7 +8,7 @@
     {% endif %}
     <div class="route-container">
         <div class="route-info">
-        <p><strong>Venue:</strong> {{ route_venue }}</p>
+        <p><strong>Venue:</strong> <a href="/venue/{{ route_venue.id }}">{{ route_venue }}</a></p>
 
         <p><strong>Grade:</strong> {{ route.grade }}</p>
 
